@@ -62,7 +62,7 @@ export function HistoryPanel({ history, onLoad, onDelete, onClearAll, onToggleSt
           placeholder={t("searchHistory")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-2xl text-[14px] text-white placeholder:text-white/20 pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500/20"
+          className="w-full rounded-2xl text-[14px] text-white placeholder:text-white/20 pl-10 pr-4 py-3 outline-none"
           style={glassInput}
         />
       </div>

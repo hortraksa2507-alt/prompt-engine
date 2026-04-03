@@ -72,7 +72,7 @@ export function PromptOutput({ prompt, onShare }: PromptOutputProps) {
       {/* Card header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <FileText className={cn("w-4 h-4", locale === "km" ? "text-amber-400/60" : "text-emerald-400/60")} />
+          <FileText className="w-4 h-4" style={{ color: "rgba(var(--accent-rgb), 0.6)" }} />
           <span className="text-[13px] font-semibold text-white/50">{t("generatedResult")}</span>
           <div className="flex gap-2 text-[11px] text-white/25 font-medium ml-2">
             <span>{words} {t("words")}</span>
@@ -93,10 +93,8 @@ export function PromptOutput({ prompt, onShare }: PromptOutputProps) {
             <button
               aria-label={locale === "km" ? "ចែករំលែក" : "Share"}
               onClick={handleShare}
-              className={cn(
-                "flex items-center gap-1.5 text-[12px] font-medium px-2.5 py-1.5 rounded-lg transition-colors hover:bg-white/[0.05]",
-                locale === "km" ? "text-amber-300/60 hover:text-amber-200" : "text-emerald-300/60 hover:text-emerald-200"
-              )}
+              className="flex items-center gap-1.5 text-[12px] font-medium px-2.5 py-1.5 rounded-lg transition-colors hover:bg-white/[0.05]"
+              style={{ color: "rgba(var(--accent-rgb), 0.6)" }}
             >
               <Share2 className="w-3 h-3" />
             </button>
@@ -104,13 +102,11 @@ export function PromptOutput({ prompt, onShare }: PromptOutputProps) {
           <button
             aria-label={locale === "km" ? "ចម្លង" : "Copy prompt"}
             onClick={handleCopy}
-            className={cn(
-              "flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-full transition-all duration-300",
-              copied
-                ? (locale === "km" ? "text-amber-200" : "text-green-300")
-                : (locale === "km" ? "text-amber-200 hover:text-white" : "text-emerald-200 hover:text-white")
-            )}
-            style={glassChipActive}
+            className="flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-full transition-all duration-300 hover:text-white"
+            style={{
+              ...glassChipActive,
+              color: copied ? "rgba(var(--accent-rgb), 0.95)" : "rgba(var(--accent-rgb), 0.8)",
+            }}
           >
             {copied ? <Check className="w-3 h-3" strokeWidth={2.5} /> : <Copy className="w-3 h-3" />}
             {copied ? t("copied") : t("copy")}

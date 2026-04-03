@@ -185,13 +185,16 @@ export function BuilderForm({ builder }: BuilderFormProps) {
           className="w-full flex items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-white/[0.03]"
         >
           <div className="flex items-center gap-2">
-            <Settings2 className={cn("w-4 h-4", locale === "km" ? "text-amber-400/60" : "text-emerald-400/60")} />
+            <Settings2 className="w-4 h-4" style={{ color: "rgba(var(--accent-rgb), 0.6)" }} />
             <span className="text-[13px] font-semibold text-white/60">{t("advancedOptions")}</span>
             {advancedCount > 0 && (
-              <span className={cn(
-                "text-[11px] font-bold px-2 py-0.5 rounded-full",
-                locale === "km" ? "text-amber-300 bg-amber-500/15" : "text-emerald-300 bg-emerald-500/15"
-              )}>
+              <span
+                className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                style={{
+                  color: "rgba(var(--accent-rgb), 0.9)",
+                  background: "rgba(var(--accent-rgb), 0.12)",
+                }}
+              >
                 {advancedCount}
               </span>
             )}
@@ -247,23 +250,21 @@ export function BuilderForm({ builder }: BuilderFormProps) {
         )}
       >
         <div className="max-w-2xl mx-auto px-5 pb-5 pt-3"
-          style={{
-            background: locale === "km"
-              ? "linear-gradient(to top, rgba(11,8,4,0.97) 60%, transparent)"
-              : "linear-gradient(to top, rgba(6,10,13,0.95) 60%, transparent)",
-          }}
+          style={{ background: "linear-gradient(to top, var(--bg-body) 60%, transparent)" }}
         >
           <div className="flex gap-3">
             <button
               onClick={async () => { await hapticMedium(); if (canGenerate) generate(); }}
               disabled={isGenerating}
               className={cn(
-                "flex-1 rounded-2xl py-4 text-[15px] font-semibold text-white active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2",
+                "flex-1 rounded-2xl py-4 text-[15px] font-semibold text-white active:scale-[0.97] flex items-center justify-center gap-2",
+                "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
                 isGenerating && "opacity-80",
-                locale === "km"
-                  ? "bg-gradient-to-r from-amber-500 to-yellow-400 shadow-[0_4px_24px_rgba(201,162,39,0.35)] hover:shadow-[0_4px_32px_rgba(201,162,39,0.5)]"
-                  : "bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-[0_4px_24px_rgba(40,200,140,0.3)] hover:shadow-[0_4px_32px_rgba(40,200,140,0.4)]"
               )}
+              style={{
+                background: "linear-gradient(135deg, rgba(var(--accent-rgb), 0.85) 0%, rgba(var(--accent2-rgb), 0.75) 100%)",
+                boxShadow: "0 4px 24px rgba(var(--accent-rgb), 0.3), 0 0 40px rgba(var(--accent-rgb), 0.1)",
+              }}
             >
               {isGenerating ? (
                 <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />

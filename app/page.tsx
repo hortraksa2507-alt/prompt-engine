@@ -47,7 +47,7 @@ export default function Home() {
         position="bottom-center"
         toastOptions={{
           style: {
-            background: locale === "km" ? "rgba(18, 12, 4, 0.92)" : "rgba(12, 20, 18, 0.9)",
+            background: "var(--dialog-bg)",
             backdropFilter: "blur(40px) saturate(1.5)",
             WebkitBackdropFilter: "blur(40px) saturate(1.5)",
             border: "1px solid var(--accent-border-mid)",
@@ -79,7 +79,7 @@ export default function Home() {
                 className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={glassActive}
               >
-                <Zap className="w-4 h-4 text-emerald-300" />
+                <Zap className="w-4 h-4" style={{ color: "rgba(var(--accent-rgb), 0.9)" }} />
               </div>
               <div>
                 <h1 className={cn("text-[17px] font-bold text-white tracking-tight", locale === "km" && "km-app-name")}>{t("appName")}</h1>

@@ -22,7 +22,7 @@ export function ChipSelector<T extends string>({
   onSelect,
   hint,
 }: ChipSelectorProps<T>) {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
 
   return (
     <div className="space-y-2.5">
@@ -46,10 +46,10 @@ export function ChipSelector<T extends string>({
               style={isActive ? glassChipActive : glassChip}
             >
               {isActive && (
-                <span className={cn(
-                  "inline-block w-1.5 h-1.5 rounded-full mr-1.5",
-                  locale === "km" ? "bg-amber-400" : "bg-emerald-400"
-                )} />
+                <span
+                  className="inline-block w-1.5 h-1.5 rounded-full mr-1.5"
+                  style={{ background: "rgba(var(--accent-rgb), 0.9)" }}
+                />
               )}
               {t(opt as TranslationKey)}
             </button>
@@ -75,7 +75,7 @@ export function MultiChipSelector<T extends string>({
   onToggle,
   hint,
 }: MultiChipSelectorProps<T>) {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
 
   return (
     <div className="space-y-2.5">
@@ -100,7 +100,8 @@ export function MultiChipSelector<T extends string>({
             >
               {isActive && (
                 <Check
-                  className={cn("w-3 h-3", locale === "km" ? "text-amber-300" : "text-emerald-300")}
+                  className="w-3 h-3"
+                  style={{ color: "rgba(var(--accent-rgb), 0.85)" }}
                   strokeWidth={2.5}
                 />
               )}

@@ -118,7 +118,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   // ── Derived ───────────────────────────────────────────────
 
-  const accentColor = isKm ? "text-amber-300" : "text-emerald-300";
+  const accentStyle = { color: "rgba(var(--accent-rgb), 0.85)" };
 
   return (
     <>
@@ -177,13 +177,13 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           onClick={toggleLocale}
           left={
             <>
-              <Globe className={cn("w-4.5 h-4.5", accentColor)} strokeWidth={1.8} size={18} />
+              <Globe className="w-4.5 h-4.5" strokeWidth={1.8} size={18} style={accentStyle} />
               <span className="text-[15px] font-medium">{lbl.language}</span>
             </>
           }
           right={
             <>
-              <span className={cn("text-[13px] font-medium", accentColor)}>
+              <span className="text-[13px] font-medium" style={accentStyle}>
                 {locale === "en" ? "English" : "ខ្មែរ"}
               </span>
               <ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />
