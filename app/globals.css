@@ -11,8 +11,9 @@
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, monospace;
 }
 
-/* ── Accent CSS variables ────────────────────────────────────── */
-/* EN default: teal-green */
+/* ── Theme CSS variables (all themes set color tokens on body) ── */
+
+/* Fallback / base values */
 :root {
   --accent-rgb: 40, 200, 140;
   --accent2-rgb: 40, 180, 220;
@@ -36,28 +37,248 @@
   --bg-glow-4: rgba(40, 200, 160, 0.04);
 }
 
-/* KM: Angkor gold + warm amber palette */
-.locale-km {
+/* ── KM THEMES ──────────────────────────────────────────────── */
+
+/* ABA Gold — pure black + luxury gold, inspired by ABA Bank */
+.theme-aba-gold {
   --accent-rgb: 201, 162, 39;
-  --accent2-rgb: 190, 110, 30;
-  --accent-border: rgba(212, 175, 55, 0.18);
-  --accent-border-mid: rgba(212, 175, 55, 0.28);
-  --accent-border-strong: rgba(212, 175, 55, 0.55);
-  --accent-glow: rgba(201, 162, 39, 0.2);
-  --accent-glow-soft: rgba(201, 162, 39, 0.06);
-  --chip-active-bg: linear-gradient(135deg, rgba(201,162,39,0.3) 0%, rgba(190,110,30,0.22) 100%);
-  --active-bg: linear-gradient(135deg, rgba(201,162,39,0.22) 0%, rgba(190,110,30,0.15) 50%, rgba(201,162,39,0.18) 100%);
-  --card-bg: linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(190,110,30,0.06) 100%);
-  --scrollbar-thumb: rgba(201, 162, 39, 0.2);
-  --selection-bg: rgba(201, 162, 39, 0.38);
-  --dialog-bg: rgba(18, 12, 4, 0.96);
-  --dialog-border: rgba(212, 175, 55, 0.2);
-  --dialog-glow: rgba(201, 162, 39, 0.07);
-  --bg-body: #0b0804;
-  --bg-glow-1: rgba(201, 162, 39, 0.10);
-  --bg-glow-2: rgba(190, 110, 30, 0.07);
-  --bg-glow-3: rgba(140, 60, 20, 0.05);
-  --bg-glow-4: rgba(212, 175, 55, 0.06);
+  --accent2-rgb: 180, 130, 20;
+  --accent-border: rgba(212, 175, 55, 0.2);
+  --accent-border-mid: rgba(212, 175, 55, 0.32);
+  --accent-border-strong: rgba(212, 175, 55, 0.6);
+  --accent-glow: rgba(201, 162, 39, 0.22);
+  --accent-glow-soft: rgba(201, 162, 39, 0.07);
+  --chip-active-bg: linear-gradient(135deg, rgba(201,162,39,0.32) 0%, rgba(180,130,20,0.24) 100%);
+  --active-bg: linear-gradient(135deg, rgba(201,162,39,0.25) 0%, rgba(180,130,20,0.16) 50%, rgba(212,175,55,0.2) 100%);
+  --card-bg: linear-gradient(135deg, rgba(201,162,39,0.09) 0%, rgba(255,255,255,0.02) 50%, rgba(180,130,20,0.07) 100%);
+  --scrollbar-thumb: rgba(201, 162, 39, 0.22);
+  --selection-bg: rgba(212, 175, 55, 0.4);
+  --dialog-bg: rgba(10, 8, 2, 0.97);
+  --dialog-border: rgba(212, 175, 55, 0.22);
+  --dialog-glow: rgba(201, 162, 39, 0.08);
+  --bg-body: #000000;
+  --bg-glow-1: rgba(201, 162, 39, 0.12);
+  --bg-glow-2: rgba(180, 130, 20, 0.08);
+  --bg-glow-3: rgba(150, 90, 15, 0.05);
+  --bg-glow-4: rgba(212, 175, 55, 0.07);
+}
+
+/* Angkor Sunset — deep indigo + amber + purple */
+.theme-angkor {
+  --accent-rgb: 220, 130, 40;
+  --accent2-rgb: 160, 80, 200;
+  --accent-border: rgba(220, 130, 40, 0.18);
+  --accent-border-mid: rgba(220, 130, 40, 0.28);
+  --accent-border-strong: rgba(220, 130, 40, 0.5);
+  --accent-glow: rgba(220, 130, 40, 0.2);
+  --accent-glow-soft: rgba(220, 130, 40, 0.06);
+  --chip-active-bg: linear-gradient(135deg, rgba(220,130,40,0.3) 0%, rgba(160,80,200,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(220,130,40,0.22) 0%, rgba(160,80,200,0.14) 50%, rgba(220,130,40,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(220,130,40,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(160,80,200,0.06) 100%);
+  --scrollbar-thumb: rgba(220, 130, 40, 0.2);
+  --selection-bg: rgba(220, 130, 40, 0.35);
+  --dialog-bg: rgba(13, 8, 20, 0.97);
+  --dialog-border: rgba(220, 130, 40, 0.2);
+  --dialog-glow: rgba(220, 130, 40, 0.07);
+  --bg-body: #0d0814;
+  --bg-glow-1: rgba(220, 130, 40, 0.10);
+  --bg-glow-2: rgba(160, 80, 200, 0.07);
+  --bg-glow-3: rgba(200, 100, 30, 0.05);
+  --bg-glow-4: rgba(180, 60, 160, 0.05);
+}
+
+/* Mekong Jade — deep teal + jade + gold */
+.theme-mekong {
+  --accent-rgb: 40, 180, 150;
+  --accent2-rgb: 190, 150, 30;
+  --accent-border: rgba(40, 180, 150, 0.18);
+  --accent-border-mid: rgba(40, 180, 150, 0.28);
+  --accent-border-strong: rgba(40, 180, 150, 0.5);
+  --accent-glow: rgba(40, 180, 150, 0.2);
+  --accent-glow-soft: rgba(40, 180, 150, 0.06);
+  --chip-active-bg: linear-gradient(135deg, rgba(40,180,150,0.28) 0%, rgba(190,150,30,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(40,180,150,0.22) 0%, rgba(190,150,30,0.12) 50%, rgba(40,180,150,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(40,180,150,0.07) 0%, rgba(255,255,255,0.02) 50%, rgba(190,150,30,0.05) 100%);
+  --scrollbar-thumb: rgba(40, 180, 150, 0.2);
+  --selection-bg: rgba(40, 180, 150, 0.32);
+  --dialog-bg: rgba(3, 15, 13, 0.97);
+  --dialog-border: rgba(40, 180, 150, 0.2);
+  --dialog-glow: rgba(40, 180, 150, 0.07);
+  --bg-body: #030f0d;
+  --bg-glow-1: rgba(40, 180, 150, 0.10);
+  --bg-glow-2: rgba(190, 150, 30, 0.07);
+  --bg-glow-3: rgba(20, 140, 110, 0.05);
+  --bg-glow-4: rgba(160, 130, 20, 0.05);
+}
+
+/* Lotus — deep dark + rose + magenta */
+.theme-lotus {
+  --accent-rgb: 220, 80, 140;
+  --accent2-rgb: 180, 60, 200;
+  --accent-border: rgba(220, 80, 140, 0.18);
+  --accent-border-mid: rgba(220, 80, 140, 0.28);
+  --accent-border-strong: rgba(220, 80, 140, 0.52);
+  --accent-glow: rgba(220, 80, 140, 0.2);
+  --accent-glow-soft: rgba(220, 80, 140, 0.06);
+  --chip-active-bg: linear-gradient(135deg, rgba(220,80,140,0.3) 0%, rgba(180,60,200,0.22) 100%);
+  --active-bg: linear-gradient(135deg, rgba(220,80,140,0.22) 0%, rgba(180,60,200,0.15) 50%, rgba(220,80,140,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(220,80,140,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(180,60,200,0.06) 100%);
+  --scrollbar-thumb: rgba(220, 80, 140, 0.2);
+  --selection-bg: rgba(220, 80, 140, 0.35);
+  --dialog-bg: rgba(15, 3, 11, 0.97);
+  --dialog-border: rgba(220, 80, 140, 0.2);
+  --dialog-glow: rgba(220, 80, 140, 0.07);
+  --bg-body: #0f030b;
+  --bg-glow-1: rgba(220, 80, 140, 0.10);
+  --bg-glow-2: rgba(180, 60, 200, 0.07);
+  --bg-glow-3: rgba(200, 50, 120, 0.05);
+  --bg-glow-4: rgba(160, 40, 180, 0.05);
+}
+
+/* Night Sky — deep navy + ice blue + silver */
+.theme-night-sky {
+  --accent-rgb: 100, 160, 240;
+  --accent2-rgb: 140, 180, 255;
+  --accent-border: rgba(100, 160, 240, 0.18);
+  --accent-border-mid: rgba(100, 160, 240, 0.28);
+  --accent-border-strong: rgba(100, 160, 240, 0.5);
+  --accent-glow: rgba(100, 160, 240, 0.2);
+  --accent-glow-soft: rgba(100, 160, 240, 0.05);
+  --chip-active-bg: linear-gradient(135deg, rgba(100,160,240,0.28) 0%, rgba(140,180,255,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(100,160,240,0.22) 0%, rgba(140,180,255,0.14) 50%, rgba(100,160,240,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(100,160,240,0.07) 0%, rgba(255,255,255,0.03) 50%, rgba(140,180,255,0.05) 100%);
+  --scrollbar-thumb: rgba(100, 160, 240, 0.18);
+  --selection-bg: rgba(100, 160, 240, 0.32);
+  --dialog-bg: rgba(3, 6, 15, 0.97);
+  --dialog-border: rgba(100, 160, 240, 0.18);
+  --dialog-glow: rgba(100, 160, 240, 0.06);
+  --bg-body: #03060f;
+  --bg-glow-1: rgba(100, 160, 240, 0.09);
+  --bg-glow-2: rgba(140, 180, 255, 0.06);
+  --bg-glow-3: rgba(60, 100, 200, 0.04);
+  --bg-glow-4: rgba(80, 120, 220, 0.05);
+}
+
+/* ── EN THEMES ──────────────────────────────────────────────── */
+
+/* Ocean — teal + cyan (original default) */
+.theme-ocean {
+  --accent-rgb: 40, 200, 140;
+  --accent2-rgb: 40, 180, 220;
+  --accent-border: rgba(80, 220, 160, 0.15);
+  --accent-border-mid: rgba(80, 220, 160, 0.2);
+  --accent-border-strong: rgba(80, 220, 160, 0.4);
+  --accent-glow: rgba(40, 200, 140, 0.15);
+  --accent-glow-soft: rgba(40, 200, 140, 0.04);
+  --chip-active-bg: linear-gradient(135deg, rgba(40,200,140,0.25) 0%, rgba(40,180,220,0.18) 100%);
+  --active-bg: linear-gradient(135deg, rgba(40,200,140,0.18) 0%, rgba(40,180,220,0.12) 50%, rgba(40,200,140,0.15) 100%);
+  --card-bg: linear-gradient(135deg, rgba(40,200,140,0.06) 0%, rgba(255,255,255,0.03) 50%, rgba(40,180,220,0.05) 100%);
+  --scrollbar-thumb: rgba(40, 200, 140, 0.15);
+  --selection-bg: rgba(40, 200, 140, 0.3);
+  --dialog-bg: rgba(12, 20, 18, 0.95);
+  --dialog-border: rgba(80, 220, 160, 0.15);
+  --dialog-glow: rgba(40, 200, 140, 0.05);
+  --bg-body: #060a0d;
+  --bg-glow-1: rgba(40, 200, 140, 0.08);
+  --bg-glow-2: rgba(40, 180, 220, 0.06);
+  --bg-glow-3: rgba(255, 180, 40, 0.03);
+  --bg-glow-4: rgba(40, 200, 160, 0.04);
+}
+
+/* Forest — deep emerald green */
+.theme-forest {
+  --accent-rgb: 52, 211, 100;
+  --accent2-rgb: 16, 185, 129;
+  --accent-border: rgba(52, 211, 100, 0.15);
+  --accent-border-mid: rgba(52, 211, 100, 0.22);
+  --accent-border-strong: rgba(52, 211, 100, 0.45);
+  --accent-glow: rgba(52, 211, 100, 0.15);
+  --accent-glow-soft: rgba(52, 211, 100, 0.05);
+  --chip-active-bg: linear-gradient(135deg, rgba(52,211,100,0.26) 0%, rgba(16,185,129,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(52,211,100,0.2) 0%, rgba(16,185,129,0.13) 50%, rgba(52,211,100,0.16) 100%);
+  --card-bg: linear-gradient(135deg, rgba(52,211,100,0.07) 0%, rgba(255,255,255,0.02) 50%, rgba(16,185,129,0.05) 100%);
+  --scrollbar-thumb: rgba(52, 211, 100, 0.16);
+  --selection-bg: rgba(52, 211, 100, 0.3);
+  --dialog-bg: rgba(3, 13, 6, 0.96);
+  --dialog-border: rgba(52, 211, 100, 0.16);
+  --dialog-glow: rgba(52, 211, 100, 0.06);
+  --bg-body: #030d06;
+  --bg-glow-1: rgba(52, 211, 100, 0.09);
+  --bg-glow-2: rgba(16, 185, 129, 0.07);
+  --bg-glow-3: rgba(30, 160, 80, 0.04);
+  --bg-glow-4: rgba(10, 150, 100, 0.05);
+}
+
+/* Aurora — violet + purple */
+.theme-aurora {
+  --accent-rgb: 160, 100, 240;
+  --accent2-rgb: 200, 80, 220;
+  --accent-border: rgba(160, 100, 240, 0.17);
+  --accent-border-mid: rgba(160, 100, 240, 0.26);
+  --accent-border-strong: rgba(160, 100, 240, 0.48);
+  --accent-glow: rgba(160, 100, 240, 0.18);
+  --accent-glow-soft: rgba(160, 100, 240, 0.05);
+  --chip-active-bg: linear-gradient(135deg, rgba(160,100,240,0.28) 0%, rgba(200,80,220,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(160,100,240,0.22) 0%, rgba(200,80,220,0.14) 50%, rgba(160,100,240,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(160,100,240,0.07) 0%, rgba(255,255,255,0.02) 50%, rgba(200,80,220,0.06) 100%);
+  --scrollbar-thumb: rgba(160, 100, 240, 0.18);
+  --selection-bg: rgba(160, 100, 240, 0.32);
+  --dialog-bg: rgba(7, 3, 15, 0.97);
+  --dialog-border: rgba(160, 100, 240, 0.18);
+  --dialog-glow: rgba(160, 100, 240, 0.07);
+  --bg-body: #07030f;
+  --bg-glow-1: rgba(160, 100, 240, 0.10);
+  --bg-glow-2: rgba(200, 80, 220, 0.07);
+  --bg-glow-3: rgba(120, 60, 200, 0.05);
+  --bg-glow-4: rgba(180, 60, 210, 0.05);
+}
+
+/* Sunset — warm orange + amber */
+.theme-sunset {
+  --accent-rgb: 251, 146, 60;
+  --accent2-rgb: 251, 191, 36;
+  --accent-border: rgba(251, 146, 60, 0.17);
+  --accent-border-mid: rgba(251, 146, 60, 0.26);
+  --accent-border-strong: rgba(251, 146, 60, 0.48);
+  --accent-glow: rgba(251, 146, 60, 0.18);
+  --accent-glow-soft: rgba(251, 146, 60, 0.05);
+  --chip-active-bg: linear-gradient(135deg, rgba(251,146,60,0.28) 0%, rgba(251,191,36,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(251,146,60,0.22) 0%, rgba(251,191,36,0.14) 50%, rgba(251,146,60,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(251,146,60,0.07) 0%, rgba(255,255,255,0.02) 50%, rgba(251,191,36,0.05) 100%);
+  --scrollbar-thumb: rgba(251, 146, 60, 0.18);
+  --selection-bg: rgba(251, 146, 60, 0.32);
+  --dialog-bg: rgba(15, 7, 3, 0.97);
+  --dialog-border: rgba(251, 146, 60, 0.18);
+  --dialog-glow: rgba(251, 146, 60, 0.06);
+  --bg-body: #0f0703;
+  --bg-glow-1: rgba(251, 146, 60, 0.10);
+  --bg-glow-2: rgba(251, 191, 36, 0.07);
+  --bg-glow-3: rgba(220, 100, 30, 0.05);
+  --bg-glow-4: rgba(230, 160, 20, 0.05);
+}
+
+/* Midnight — deep charcoal + electric blue + indigo */
+.theme-midnight {
+  --accent-rgb: 59, 130, 246;
+  --accent2-rgb: 99, 102, 241;
+  --accent-border: rgba(59, 130, 246, 0.16);
+  --accent-border-mid: rgba(59, 130, 246, 0.24);
+  --accent-border-strong: rgba(59, 130, 246, 0.46);
+  --accent-glow: rgba(59, 130, 246, 0.16);
+  --accent-glow-soft: rgba(59, 130, 246, 0.05);
+  --chip-active-bg: linear-gradient(135deg, rgba(59,130,246,0.26) 0%, rgba(99,102,241,0.2) 100%);
+  --active-bg: linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(99,102,241,0.14) 50%, rgba(59,130,246,0.16) 100%);
+  --card-bg: linear-gradient(135deg, rgba(59,130,246,0.07) 0%, rgba(255,255,255,0.03) 50%, rgba(99,102,241,0.05) 100%);
+  --scrollbar-thumb: rgba(59, 130, 246, 0.16);
+  --selection-bg: rgba(59, 130, 246, 0.3);
+  --dialog-bg: rgba(2, 4, 8, 0.97);
+  --dialog-border: rgba(59, 130, 246, 0.16);
+  --dialog-glow: rgba(59, 130, 246, 0.06);
+  --bg-body: #020408;
+  --bg-glow-1: rgba(59, 130, 246, 0.09);
+  --bg-glow-2: rgba(99, 102, 241, 0.07);
+  --bg-glow-3: rgba(30, 80, 200, 0.04);
+  --bg-glow-4: rgba(70, 80, 220, 0.05);
 }
 
 * {
@@ -82,7 +303,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.4s ease, background-image 0.4s ease;
+}
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* PWA safe areas */
@@ -175,48 +405,28 @@ textarea:focus {
   line-height: 1.65;
 }
 
-/* Golden shimmer on app name in KM mode */
-@keyframes km-gold-shimmer {
-  0%, 100% {
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
-  }
-  50% {
-    text-shadow: 0 0 22px rgba(212, 175, 55, 0.5), 0 0 40px rgba(201, 162, 39, 0.2);
-  }
+/* App name shimmer — uses theme accent */
+@keyframes accent-shimmer {
+  0%, 100% { text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.25); }
+  50%       { text-shadow: 0 0 22px rgba(var(--accent-rgb), 0.5), 0 0 40px rgba(var(--accent-rgb), 0.2); }
 }
 
 .km-app-name {
-  background: linear-gradient(135deg, #D4AF37 0%, #F0C84A 35%, #C9A227 65%, #E8B75F 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: km-gold-shimmer 3s ease-in-out infinite;
+  color: rgba(var(--accent-rgb), 1);
+  animation: accent-shimmer 3s ease-in-out infinite;
 }
 
 .km-tagline {
-  color: rgba(212, 175, 55, 0.45) !important;
+  color: rgba(var(--accent-rgb), 0.45) !important;
 }
 
-/* KM language button gold highlight */
+/* Language button accent highlight */
 .km-lang-active {
-  background: linear-gradient(135deg, rgba(201,162,39,0.22) 0%, rgba(190,110,30,0.16) 100%) !important;
-  border-color: rgba(212, 175, 55, 0.45) !important;
+  background: var(--chip-active-bg) !important;
+  border-color: rgba(var(--accent-rgb), 0.45) !important;
 }
 
 @keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(40, 200, 140, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(40, 200, 140, 0.2);
-  }
-}
-
-@keyframes km-glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(201, 162, 39, 0.12);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(212, 175, 55, 0.28);
-  }
+  0%, 100% { box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1); }
+  50%       { box-shadow: 0 0 32px rgba(var(--accent-rgb), 0.22); }
 }

@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { glass, glassSubtle, glassActive, glassCard } from "@/lib/glass";
 import { exportHistory, clearHistory } from "@/lib/storage";
-import { Globe, Trash2, Download, Info, Shield, X, Star, ChevronRight } from "lucide-react";
+import { Globe, Trash2, Download, Info, Shield, X, Palette, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { ThemeSelector } from "./theme-selector";
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -75,6 +76,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   // ── Labels ────────────────────────────────────────────────
   const lbl = {
+    theme:         isKm ? "រចនាប័ទ្ម"                    : "Theme",
     language:      isKm ? "ភាសា"                         : "Language",
     exportHistory: isKm ? "នាំចេញប្រវត្តិ"               : "Export History",
     clearHistory:  isKm ? "សម្អាតប្រវត្តិទាំងអស់"        : "Clear All History",
@@ -159,6 +161,12 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <X className="w-4 h-4" strokeWidth={2} />
           </button>
         </div>
+
+        <Divider />
+
+        {/* ── Theme ────────────────────────────────────────── */}
+        <SectionHeader label={lbl.theme} />
+        <ThemeSelector />
 
         <Divider />
 

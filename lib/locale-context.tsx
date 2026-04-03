@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { Locale, t as translate, TranslationKey } from "./i18n";
 import { getSetting, setSetting } from "@/lib/storage";
+import { ThemeProvider } from "./theme-context";
 
 interface LocaleContextValue {
   locale: Locale;
@@ -16,7 +17,7 @@ const LocaleContext = createContext<LocaleContextValue>({
   t: (key) => key,
 });
 
-export function LocaleProvider({ children }: { children: ReactNode }) {
+function LocaleCore({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>(() => getSetting<Locale>("locale", "en"));
 
   const toggleLocale = useCallback(() => {
@@ -27,7 +28,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // Sync locale class to body so CSS vars cascade to body background
+  // Sync locale class to body (typography only — colors handled by theme classes)
   useEffect(() => {
     document.body.classList.toggle("locale-km", locale === "km");
     document.documentElement.lang = locale;
@@ -40,9 +41,15 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   return (
     <LocaleContext.Provider value={{ locale, toggleLocale, t }}>
-      {children}
+      <ThemeProvider locale={locale}>
+        {children}
+      </ThemeProvider>
     </LocaleContext.Provider>
   );
+}
+
+export function LocaleProvider({ children }: { children: ReactNode }) {
+  return <LocaleCore>{children}</LocaleCore>;
 }
 
 export function useLocale() {
