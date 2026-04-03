@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0a0a0f;
+  --color-foreground: #f5f5f7;
+  --color-accent-green: #34d399;
+  --color-accent-teal: #2dd4bf;
+  --color-accent-orange: #fb923c;
+  --color-accent-amber: #fbbf24;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, monospace;
+}
+
+/* ── Accent CSS variables ────────────────────────────────────── */
+/* EN default: teal-green */
+:root {
+  --accent-rgb: 40, 200, 140;
+  --accent2-rgb: 40, 180, 220;
+  --accent-border: rgba(80, 220, 160, 0.15);
+  --accent-border-mid: rgba(80, 220, 160, 0.2);
+  --accent-border-strong: rgba(80, 220, 160, 0.4);
+  --accent-glow: rgba(40, 200, 140, 0.15);
+  --accent-glow-soft: rgba(40, 200, 140, 0.04);
+  --chip-active-bg: linear-gradient(135deg, rgba(40,200,140,0.25) 0%, rgba(40,180,220,0.18) 100%);
+  --active-bg: linear-gradient(135deg, rgba(40,200,140,0.18) 0%, rgba(40,180,220,0.12) 50%, rgba(40,200,140,0.15) 100%);
+  --card-bg: linear-gradient(135deg, rgba(40,200,140,0.06) 0%, rgba(255,255,255,0.03) 50%, rgba(40,180,220,0.05) 100%);
+  --scrollbar-thumb: rgba(40, 200, 140, 0.15);
+  --selection-bg: rgba(40, 200, 140, 0.3);
+  --dialog-bg: rgba(12, 20, 18, 0.95);
+  --dialog-border: rgba(80, 220, 160, 0.15);
+  --dialog-glow: rgba(40, 200, 140, 0.05);
+  --bg-body: #060a0d;
+  --bg-glow-1: rgba(40, 200, 140, 0.08);
+  --bg-glow-2: rgba(40, 180, 220, 0.06);
+  --bg-glow-3: rgba(255, 180, 40, 0.03);
+  --bg-glow-4: rgba(40, 200, 160, 0.04);
+}
+
+/* KM: Angkor gold + warm amber palette */
+.locale-km {
+  --accent-rgb: 201, 162, 39;
+  --accent2-rgb: 190, 110, 30;
+  --accent-border: rgba(212, 175, 55, 0.18);
+  --accent-border-mid: rgba(212, 175, 55, 0.28);
+  --accent-border-strong: rgba(212, 175, 55, 0.55);
+  --accent-glow: rgba(201, 162, 39, 0.2);
+  --accent-glow-soft: rgba(201, 162, 39, 0.06);
+  --chip-active-bg: linear-gradient(135deg, rgba(201,162,39,0.3) 0%, rgba(190,110,30,0.22) 100%);
+  --active-bg: linear-gradient(135deg, rgba(201,162,39,0.22) 0%, rgba(190,110,30,0.15) 50%, rgba(201,162,39,0.18) 100%);
+  --card-bg: linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(190,110,30,0.06) 100%);
+  --scrollbar-thumb: rgba(201, 162, 39, 0.2);
+  --selection-bg: rgba(201, 162, 39, 0.38);
+  --dialog-bg: rgba(18, 12, 4, 0.96);
+  --dialog-border: rgba(212, 175, 55, 0.2);
+  --dialog-glow: rgba(201, 162, 39, 0.07);
+  --bg-body: #0b0804;
+  --bg-glow-1: rgba(201, 162, 39, 0.10);
+  --bg-glow-2: rgba(190, 110, 30, 0.07);
+  --bg-glow-3: rgba(140, 60, 20, 0.05);
+  --bg-glow-4: rgba(212, 175, 55, 0.06);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  color-scheme: dark;
+  background: #060a0d;
+}
+
+body {
+  background-color: var(--bg-body);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, var(--bg-glow-1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, var(--bg-glow-2) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 80%, var(--bg-glow-3) 0%, transparent 45%),
+    radial-gradient(ellipse at 10% 60%, var(--bg-glow-4) 0%, transparent 40%);
+  background-attachment: fixed;
+  color: #f5f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+  transition: background-color 0.5s ease;
+}
+
+/* PWA safe areas */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--selection-bg);
+}
+
+/* shadcn overrides */
+[data-slot="dialog-overlay"] {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+[data-slot="dialog-content"] {
+  background: var(--dialog-bg) !important;
+  backdrop-filter: blur(60px) saturate(1.5) !important;
+  border-color: var(--dialog-border) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 80px rgba(0, 0, 0, 0.5),
+    0 0 60px var(--dialog-glow) !important;
+}
+
+/* Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* XML tag syntax highlight — auto-adapts to locale */
+.xml-tag-highlight {
+  color: rgba(var(--accent-rgb), 0.85);
+}
+
+/* Input focus ring uses accent color */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.18) !important;
+}
+
+/* ── Khmer locale typography ─────────────────────────────────── */
+.locale-km {
+  font-family: "Kantumruy Pro", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.locale-km * {
+  font-family: inherit;
+}
+
+/* Khmer script needs more vertical breathing room */
+.locale-km p,
+.locale-km span,
+.locale-km button,
+.locale-km label,
+.locale-km input,
+.locale-km textarea {
+  line-height: 1.65;
+}
+
+/* Golden shimmer on app name in KM mode */
+@keyframes km-gold-shimmer {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+  }
+  50% {
+    text-shadow: 0 0 22px rgba(212, 175, 55, 0.5), 0 0 40px rgba(201, 162, 39, 0.2);
+  }
+}
+
+.km-app-name {
+  background: linear-gradient(135deg, #D4AF37 0%, #F0C84A 35%, #C9A227 65%, #E8B75F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: km-gold-shimmer 3s ease-in-out infinite;
+}
+
+.km-tagline {
+  color: rgba(212, 175, 55, 0.45) !important;
+}
+
+/* KM language button gold highlight */
+.km-lang-active {
+  background: linear-gradient(135deg, rgba(201,162,39,0.22) 0%, rgba(190,110,30,0.16) 100%) !important;
+  border-color: rgba(212, 175, 55, 0.45) !important;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(40, 200, 140, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(40, 200, 140, 0.2);
+  }
+}
+
+@keyframes km-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.12);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(212, 175, 55, 0.28);
+  }
+}
