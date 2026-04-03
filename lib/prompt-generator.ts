@@ -1,59 +1,6 @@
 import { BuilderState, PromptFramework } from "./types";
 
-const modeExamples: Record<string, string> = {
-  write: `Example of the output quality and style I want:
-
----
-[Your example content goes here — paste or describe a piece of writing you admire]
----
-
-Match this level of clarity, specificity, and engagement.`,
-  code: `Example of the code style I want:
-
-\`\`\`
-// Clean, well-named, with minimal comments
-function processUserInput(input: string): Result {
-  const validated = validate(input);
-  if (!validated.ok) return { error: validated.error };
-  return { data: transform(validated.data) };
-}
-\`\`\`
-
-Write code at this level of clarity and structure.`,
-  analyze: `Example of the analysis depth and structure I want:
-
-**Finding:** [Specific observation with data]
-**Evidence:** [Concrete supporting detail]
-**Implication:** [What this means for decisions]
-**Recommendation:** [Specific, actionable next step]
-
-Use this structure for each key finding.`,
-  debug: `Example of the debugging reasoning I want:
-
-**Observed:** [What actually happens]
-**Expected:** [What should happen]
-**Hypothesis:** [Most likely root cause]
-**Test:** [How to verify hypothesis]
-**Fix:** [Exact change needed]
-**Prevention:** [How to avoid recurrence]`,
-  learn: `Example of the explanation depth I want:
-
-Start simple: [One-sentence core concept]
-Build up: [Add one layer of nuance]
-Concrete: [Runnable example]
-Common mistake: [What beginners get wrong and why]
-
-Keep explanations at this progressive depth.`,
-  brainstorm: `Example of the idea format I want:
-
-**Idea:** [Name]
-**What:** [One sentence description]
-**Why it works:** [Core insight]
-**Risk:** [Main challenge]
-**Impact/Effort:** High/Low
-
-Generate all ideas in this structured format.`,
-};
+// ── Mode-specific knowledge ─────────────────────────────────────
 
 const modeRoles: Record<string, string> = {
   write: "an expert content strategist and writer with 15+ years crafting high-impact content across industries — blogs, white papers, marketing copy, technical docs, and executive communications",
@@ -64,60 +11,75 @@ const modeRoles: Record<string, string> = {
   brainstorm: "a creative director and systems thinker who generates both obvious and non-obvious ideas across multiple dimensions — you balance creativity with feasibility and always connect ideas to impact",
 };
 
+const modeSystemBehavior: Record<string, string> = {
+  write: `<thinking_approach>
+Before writing, identify: (1) the ONE key message, (2) who is reading and what they care about, (3) the ideal structure for this content type.
+</thinking_approach>`,
+  code: `<thinking_approach>
+Before coding: (1) state the approach in 2-3 sentences, (2) identify edge cases, (3) consider security implications. After coding: explain key design decisions.
+</thinking_approach>`,
+  analyze: `<thinking_approach>
+Before analyzing: (1) identify what data/evidence is available, (2) what the key question really is, (3) what framework best fits this analysis. Distinguish facts from inferences.
+</thinking_approach>`,
+  debug: `<thinking_approach>
+Before debugging: (1) restate observed vs expected behavior, (2) form a hypothesis, (3) design a test to confirm/deny. Show reasoning at every step.
+</thinking_approach>`,
+  learn: `<thinking_approach>
+Before explaining: (1) identify what the learner likely already knows, (2) find the single best analogy, (3) plan a progressive complexity path from simple→nuanced.
+</thinking_approach>`,
+  brainstorm: `<thinking_approach>
+Before ideating: (1) define the problem space, (2) identify at least 3 different angles/dimensions, (3) push past first-thought ideas to find non-obvious solutions.
+</thinking_approach>`,
+};
+
 const modeInstructions: Record<string, string[]> = {
   write: [
-    "Open with a compelling hook in the first sentence that immediately establishes the value for the reader.",
-    "Structure the content with a clear logical flow — each paragraph leads naturally to the next.",
-    "Use concrete specifics: named examples, numbers, real scenarios — never vague generalizations.",
-    "Match the requested tone from the first word to the last, never drifting.",
-    "Vary sentence length deliberately — short for impact, longer for nuance.",
-    "End with a memorable conclusion or clear call-to-action that gives the reader a next step.",
-    "Before writing, briefly state the core message in one sentence, then build everything around it.",
+    "Open with a compelling hook that immediately establishes value for the reader",
+    "Structure with a clear logical flow — each paragraph leads naturally to the next",
+    "Use concrete specifics: named examples, numbers, real scenarios — never vague generalizations",
+    "Match the requested tone consistently from first word to last",
+    "Vary sentence length deliberately — short for impact, longer for nuance",
+    "End with a memorable conclusion or clear call-to-action",
   ],
   code: [
-    "Before writing code, state your approach in 2-3 sentences — what pattern you're using and why.",
-    "Write idiomatic code for the language/framework — follow established conventions, not generic patterns.",
-    "Handle edge cases explicitly: null/undefined, empty inputs, boundary values, concurrent access.",
-    "Add security considerations: input validation, injection prevention, least privilege, secrets handling.",
-    "Include meaningful comments only for non-obvious logic — avoid comments that just restate the code.",
-    "After the code, explain key design decisions and any trade-offs made.",
-    "Provide usage examples showing both the happy path and error cases.",
+    "Write idiomatic code for the language/framework — follow established conventions",
+    "Handle edge cases explicitly: null/undefined, empty inputs, boundary values, concurrent access",
+    "Add security considerations: input validation, injection prevention, least privilege",
+    "Include meaningful comments only for non-obvious logic",
+    "Provide usage examples showing both happy path and error handling",
   ],
   analyze: [
-    "Open with a 2-3 sentence executive summary of the key findings — the 'so what' upfront.",
-    "Support every conclusion with specific evidence, data, or examples — no unsupported assertions.",
-    "Distinguish explicitly between: confirmed facts, reasonable inferences, and assumptions.",
-    "Identify second-order effects and non-obvious patterns that a quick reading would miss.",
-    "Flag what you don't know and what additional data would strengthen the analysis.",
-    "Quantify impact and priority wherever possible — use numbers, percentages, or relative comparisons.",
-    "Close with a prioritized action plan: what to do first, second, and what to monitor.",
+    "Open with a 2-3 sentence executive summary — the 'so what' upfront",
+    "Support every conclusion with specific evidence — no unsupported assertions",
+    "Distinguish between confirmed facts, reasonable inferences, and assumptions",
+    "Identify second-order effects and non-obvious patterns",
+    "Quantify impact and priority — use numbers, percentages, or relative comparisons",
+    "Close with a prioritized action plan",
   ],
   debug: [
-    "Start by precisely restating the problem — what is observed vs. what is expected.",
-    "Form a hypothesis about the root cause before investigating, then test it systematically.",
-    "Show your reasoning at each step — what you checked, what it told you, what you ruled out.",
-    "Trace the execution path from input to failure — identify the exact point where behavior diverges.",
-    "Distinguish between the symptom (what fails) and the root cause (why it fails).",
-    "Provide the fix with a clear before/after code comparison and explain why this resolves the root cause.",
-    "Recommend preventive measures: tests to add, patterns to avoid, monitoring to set up.",
+    "Precisely restate the problem — observed vs expected",
+    "Form a hypothesis about root cause before investigating",
+    "Show reasoning: what you checked, what it told you, what you ruled out",
+    "Trace execution from input to failure — identify exact divergence point",
+    "Distinguish symptom (what fails) from root cause (why it fails)",
+    "Provide fix with clear before/after comparison",
+    "Recommend preventive measures: tests, patterns, monitoring",
   ],
   learn: [
-    "Start with the single best mental model or analogy that captures the core concept.",
-    "Build understanding progressively: start with the simplest case, then add complexity layer by layer.",
-    "Explicitly connect new concepts to things the learner already understands.",
-    "Include at least one concrete, runnable example for each key concept.",
-    "Call out the top 2-3 misconceptions learners typically have and explain exactly why they're wrong.",
-    "Use the Feynman technique: explain as if to someone smart but unfamiliar with this domain.",
-    "End with a clear 'what to learn next' path with specific resources or topics.",
+    "Start with the single best mental model or analogy for the core concept",
+    "Build progressively: simplest case first, then add complexity layer by layer",
+    "Connect new concepts to things the learner already understands",
+    "Include concrete, runnable examples for each key concept",
+    "Call out top misconceptions and explain exactly why they're wrong",
+    "End with a 'what to learn next' path",
   ],
   brainstorm: [
-    "Generate ideas across at least 3 different dimensions or angles — don't cluster in one direction.",
-    "Include both incremental ideas (improve what exists) and disruptive ideas (rethink from scratch).",
-    "For each idea: one sentence on what it is, one on why it could work, one on the main risk.",
-    "Actively push past first-thought ideas — the 4th and 5th ideas are often more valuable than the 1st.",
-    "Identify 2-3 combinations of ideas that could compound their individual value.",
-    "Score each idea on impact (1-5) and feasibility (1-5) to help prioritize.",
-    "Close with a recommended top-3 ranked by impact-to-effort ratio with brief justification.",
+    "Generate ideas across at least 3 different dimensions — don't cluster in one direction",
+    "Include both incremental (improve existing) and disruptive (rethink from scratch) ideas",
+    "For each idea: what it is, why it could work, main risk",
+    "Push past first-thought ideas — 4th and 5th are often more valuable",
+    "Identify combinations that could compound individual value",
+    "Rank by impact-to-effort ratio",
   ],
 };
 
@@ -125,271 +87,295 @@ const outputContracts: Record<string, string> = {
   write: "Deliver polished, publication-ready content — not a draft or outline unless explicitly asked.",
   code: "Deliver working, complete code — not pseudocode or placeholders unless explicitly specified.",
   analyze: "Deliver a structured analysis with clear findings, evidence, and prioritized recommendations.",
-  debug: "Deliver a definitive root cause diagnosis and a tested, complete fix — not guesses.",
+  debug: "Deliver a definitive root cause diagnosis and a complete fix — not guesses.",
   learn: "Deliver a complete, self-contained explanation that leaves no important gaps.",
-  brainstorm: "Deliver a concrete, evaluated list of ideas — not vague directions or categories.",
+  brainstorm: "Deliver a concrete, evaluated list of ideas — not vague directions.",
 };
 
-function buildRoleSentence(state: BuilderState): string {
-  const customRole = (state.role || "").trim();
-  if (customRole) return `You are ${customRole}.`;
-  const defaultRole = state.taskMode ? modeRoles[state.taskMode] : null;
-  if (defaultRole) return `You are ${defaultRole}.`;
-  return "";
+// ── Builder functions ────────────────────────────────────────────
+
+function buildRole(state: BuilderState): string {
+  const custom = (state.role || "").trim();
+  if (custom) return custom;
+  return state.taskMode ? (modeRoles[state.taskMode] || "") : "";
 }
 
-function buildConstraintsSentence(state: BuilderState): string {
+function buildConstraints(state: BuilderState): string {
   const parts: string[] = [];
-  if (state.tone) parts.push(`Use a ${state.tone.toLowerCase()} tone throughout`);
+
+  if (state.tone) {
+    parts.push(`Tone: ${state.tone.toLowerCase()}`);
+  }
+
   if (state.audience) {
-    const audienceMap: Record<string, string> = {
-      Expert: "Write for an expert audience — skip basics, use precise terminology",
-      Intermediate: "Write for an intermediate audience — explain specialized terms but don't over-explain",
-      Beginner: "Write for a beginner audience — define all terms, avoid assumptions about prior knowledge",
-      "Non-technical": "Write for a non-technical audience — use analogies and avoid jargon",
-      Mixed: "Write for a mixed audience — be accessible but not condescending",
+    const map: Record<string, string> = {
+      Expert: "Expert — use precise terminology, skip basics",
+      Intermediate: "Intermediate — explain specialized terms but don't over-explain",
+      Beginner: "Beginner — define all terms, no assumptions about prior knowledge",
+      "Non-technical": "Non-technical — use analogies, avoid jargon entirely",
+      Mixed: "Mixed — accessible but not condescending",
     };
-    parts.push(audienceMap[state.audience] || `target a ${state.audience.toLowerCase()} audience`);
+    parts.push(`Audience: ${map[state.audience] || state.audience}`);
   }
+
   if (state.length) {
-    const lengthMap: Record<string, string> = {
-      Brief: "be concise — say what needs to be said and stop",
-      Medium: "provide moderate depth — cover key points without exhaustive detail",
-      Detailed: "be thorough — cover all important angles with supporting detail",
-      Comprehensive: "be exhaustive — leave nothing important out, cover edge cases and nuance",
-      "As needed": "let the content determine the length — neither pad nor cut",
+    const map: Record<string, string> = {
+      Brief: "Brief — say what needs to be said and stop",
+      Medium: "Medium — cover key points without exhaustive detail",
+      Detailed: "Detailed — cover all important angles with supporting detail",
+      Comprehensive: "Comprehensive — leave nothing important out, cover edge cases",
+      "As needed": "As needed — let content determine length",
     };
-    parts.push(lengthMap[state.length]);
+    parts.push(`Length: ${map[state.length] || state.length}`);
   }
-  if (parts.length === 0) return "";
-  parts[0] = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-  return parts.join(". ") + ".";
+
+  return parts.join("\n");
 }
 
-function buildFormatSentence(state: BuilderState): string {
+function buildFormat(state: BuilderState): string {
   if (!state.outputFormat) return "";
-  const formatMap: Record<string, string> = {
-    Paragraphs: "Format as flowing prose paragraphs. Use clear topic sentences. Group related ideas together.",
-    "Bullet Points": "Format as scannable bullet points. Group related bullets under clear headers. Each bullet = one idea.",
-    "Step-by-Step": "Format as numbered steps. Each step: one clear action + expected outcome. Don't combine multiple actions in one step.",
-    Table: "Format as a table with clear column headers. Every row should be comparable across all columns.",
-    "Code Block": "Format code in properly-fenced code blocks with the language specified. Separate explanation from code.",
-    JSON: "Format output as valid, pretty-printed JSON. Use descriptive keys. Include a brief schema comment at the top.",
-    Markdown: "Format in clean Markdown: use ## headers, **bold** for key terms, - for lists, and ``` for code.",
-    XML: "Format using semantic XML tags that describe the content type. Include a root element. Indent properly.",
+  const map: Record<string, string> = {
+    Paragraphs: "Flowing prose paragraphs with clear topic sentences",
+    "Bullet Points": "Scannable bullet points grouped under clear headers — one idea per bullet",
+    "Step-by-Step": "Numbered steps — each step: one clear action + expected outcome",
+    Table: "Well-structured table with clear column headers — every row comparable",
+    "Code Block": "Properly-fenced code blocks with language specified — explanation separate from code",
+    JSON: "Valid, pretty-printed JSON with descriptive keys",
+    Markdown: "Clean Markdown with ## headers, **bold** key terms, - lists, ``` code blocks",
+    XML: "Semantic XML tags describing content types with proper indentation",
   };
-  return formatMap[state.outputFormat] || `Format the output as ${state.outputFormat}.`;
+  return map[state.outputFormat] || state.outputFormat;
 }
 
-function buildExtrasSentences(state: BuilderState): string {
-  if (!state.extras || state.extras.length === 0) return "";
-  const extraMap: Record<string, string> = {
-    "Include examples": "For every key point, include a concrete, specific example — not a generic placeholder.",
-    "Suggest alternatives": "After your main answer, suggest 2-3 alternatives with a clear reason to choose each one.",
-    "Think step-by-step": "Think through this step-by-step out loud before giving your final answer. Show your reasoning.",
-    "Pros & cons": "For each option or recommendation, explicitly list pros and cons before concluding.",
-    "Cite sources": "Cite specific sources, frameworks, or references. If uncertain, flag it explicitly.",
-    "No filler / no fluff": "No filler phrases, no hedging, no unnecessary preamble. Get to the point immediately.",
-    "Be critical / honest": "Be critically honest. Actively flag weaknesses, risks, edge cases, and things that could go wrong.",
-    "Actionable output": "Every recommendation must be immediately actionable — include specific next steps, not general advice.",
-    "Include code snippets": "Include inline code snippets to illustrate key points. Snippets should be self-contained and runnable.",
-    "Compare approaches": "Compare approaches in a structured way: list each option, its trade-offs, and when to prefer it.",
-    "Include example format": state.taskMode && modeExamples[state.taskMode]
-      ? modeExamples[state.taskMode]
-      : "Include a concrete example that shows the exact output format and quality you want.",
+function buildExtras(state: BuilderState): string[] {
+  if (!state.extras?.length) return [];
+  const map: Record<string, string> = {
+    "Include examples": "Include a concrete, specific example for every key point",
+    "Suggest alternatives": "Suggest 2-3 alternatives with a clear reason to choose each",
+    "Think step-by-step": "Think through this step-by-step before the final answer — show reasoning",
+    "Pros & cons": "For each option/recommendation, explicitly list pros and cons",
+    "Cite sources": "Cite specific sources, frameworks, or references — flag uncertainty explicitly",
+    "No filler / no fluff": "No filler, no hedging, no preamble — get to the point immediately",
+    "Be critical / honest": "Be critically honest — flag weaknesses, risks, and things that could go wrong",
+    "Actionable output": "Every recommendation must be immediately actionable with specific next steps",
+    "Include code snippets": "Include inline code snippets that are self-contained and runnable",
+    "Compare approaches": "Compare approaches: list each option, trade-offs, and when to prefer it",
+    "Include example format": "Include an example showing the exact output format and quality expected",
   };
-  return state.extras.map((e) => extraMap[e] || e).join(" ");
+  return state.extras.map((e) => map[e] || e);
 }
 
-function buildAvoidSentence(state: BuilderState): string {
-  const avoid = (state.avoid || "").trim();
-  if (!avoid) return "";
-  return `Do not include: ${avoid}.`;
+function buildAvoid(state: BuilderState): string {
+  return (state.avoid || "").trim();
 }
 
-// ── Framework-based prompt builders ──────────────────────────────
+// ── XML-structured prompt (default, no framework) ───────────────
+
+function generateStructuredPrompt(state: BuilderState): string {
+  const sections: string[] = [];
+  const role = buildRole(state);
+  const ctx = (state.context || "").trim();
+  const task = state.taskDescription.trim();
+  const mode = state.taskMode;
+  const constraints = buildConstraints(state);
+  const format = buildFormat(state);
+  const extras = buildExtras(state);
+  const avoid = buildAvoid(state);
+  const instructions = mode ? (modeInstructions[mode] || []) : [];
+  const contract = mode ? (outputContracts[mode] || "") : "";
+  const thinking = mode ? (modeSystemBehavior[mode] || "") : "";
+
+  // Role
+  if (role) {
+    sections.push(`<role>\nYou are ${role}.\n</role>`);
+  }
+
+  // Thinking approach (helps Claude produce better output)
+  if (thinking) {
+    sections.push(thinking);
+  }
+
+  // Context
+  if (ctx) {
+    sections.push(`<context>\n${ctx}\n</context>`);
+  }
+
+  // Task — the core request
+  sections.push(`<task>\n${task}\n</task>`);
+
+  // Instructions
+  if (instructions.length > 0) {
+    const instrLines = instructions.map((s, i) => `${i + 1}. ${s}`).join("\n");
+    sections.push(`<instructions>\n${instrLines}\n</instructions>`);
+  }
+
+  // Constraints block
+  const constraintParts: string[] = [];
+  if (constraints) constraintParts.push(constraints);
+  if (format) constraintParts.push(`Format: ${format}`);
+  if (extras.length) constraintParts.push(...extras);
+
+  if (constraintParts.length) {
+    sections.push(`<constraints>\n${constraintParts.join("\n")}\n</constraints>`);
+  }
+
+  // Avoid
+  if (avoid) {
+    sections.push(`<avoid>\n${avoid}\n</avoid>`);
+  }
+
+  // Output contract
+  if (contract) {
+    sections.push(`<output_requirement>\n${contract}\n</output_requirement>`);
+  }
+
+  return sections.join("\n\n");
+}
+
+// ── Framework-based prompt builders ─────────────────────────────
 
 function applyFramework(framework: PromptFramework, state: BuilderState): string {
   const task = state.taskDescription.trim();
-  const role = (state.role || "").trim() || (state.taskMode ? modeRoles[state.taskMode] : "");
+  const role = buildRole(state);
   const ctx = (state.context || "").trim();
-  const instructions = state.taskMode ? (modeInstructions[state.taskMode] || []) : [];
-  const contract = state.taskMode ? outputContracts[state.taskMode] : "";
-  const constraints = buildConstraintsSentence(state);
-  const format = buildFormatSentence(state);
-  const extras = buildExtrasSentences(state);
-  const avoid = buildAvoidSentence(state);
+  const mode = state.taskMode;
+  const instructions = mode ? (modeInstructions[mode] || []) : [];
+  const contract = mode ? (outputContracts[mode] || "") : "";
+  const constraints = buildConstraints(state);
+  const format = buildFormat(state);
+  const extras = buildExtras(state);
+  const avoid = buildAvoid(state);
 
-  const quality = [contract, constraints, format, extras, avoid].filter(Boolean).join("\n");
+  // Build quality block shared across frameworks
+  const qualityParts: string[] = [];
+  if (constraints) qualityParts.push(constraints);
+  if (format) qualityParts.push(`Format: ${format}`);
+  if (extras.length) qualityParts.push(...extras);
+  if (avoid) qualityParts.push(`Avoid: ${avoid}`);
+  const quality = qualityParts.length
+    ? `\n<constraints>\n${qualityParts.join("\n")}\n</constraints>`
+    : "";
 
   switch (framework) {
     case "TAG": {
-      // Task · Action · Goal
-      const actionLines = instructions.slice(0, 4).join("\n");
+      const actionLines = instructions.length
+        ? instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")
+        : "Follow best practices for this type of task.";
       return [
-        `**Task:** ${task}`,
-        `**Action:** ${actionLines || "Follow best practices for this type of task."}`,
-        `**Goal:** ${contract || "Deliver a high-quality, complete response that fully addresses the task."}`,
-        role ? `\nYou are ${role}.` : "",
-        ctx ? `\nContext: ${ctx}` : "",
-        quality ? `\n${quality}` : "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<task>\n${task}\n</task>`,
+        `\n<action>\n${actionLines}\n</action>`,
+        `\n<goal>\n${contract || "Deliver a complete, high-quality response that fully addresses the task."}\n</goal>`,
+        ctx ? `\n<context>\n${ctx}\n</context>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "BAB": {
-      // Before · After · Bridge
       return [
-        ctx ? `**Before (Current situation):** ${ctx}` : `**Before (Current situation):** [Describe the current state or problem]`,
-        `**After (Desired outcome):** ${contract || "A complete, high-quality response that fully solves the task."}`,
-        `**Bridge (How to get there):** ${task}`,
-        role ? `\nYou are ${role}.` : "",
-        instructions.length ? `\nApproach:\n${instructions.join("\n")}` : "",
-        quality ? `\n${quality}` : "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<before>\n${ctx || "[Describe the current situation or problem]"}\n</before>`,
+        `\n<after>\n${contract || "A complete, high-quality response that fully solves the task."}\n</after>`,
+        `\n<bridge>\n${task}\n</bridge>`,
+        instructions.length ? `\n<approach>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</approach>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "RTF": {
-      // Role · Task · Format
-      const fmt = format || "Use the clearest format for this type of content.";
       return [
-        `**Role:** You are ${role || "an expert assistant"}.`,
-        `**Task:** ${task}`,
-        `**Format:** ${fmt}`,
-        ctx ? `\nContext: ${ctx}` : "",
-        instructions.length ? `\nInstructions:\n${instructions.join("\n")}` : "",
-        [contract, constraints, extras, avoid].filter(Boolean).join("\n") || "",
+        `<role>\nYou are ${role || "an expert assistant"}.\n</role>`,
+        `\n<task>\n${task}\n</task>`,
+        `\n<format>\n${format || "Use the clearest format for this content type."}\n</format>`,
+        ctx ? `\n<context>\n${ctx}\n</context>` : "",
+        instructions.length ? `\n<instructions>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</instructions>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "CARE": {
-      // Context · Action · Result · Example
-      const example = state.taskMode && modeExamples[state.taskMode]
-        ? modeExamples[state.taskMode]
-        : "Provide a concrete example illustrating the expected output quality and format.";
       return [
-        `**Context:** ${ctx || "No additional context provided."}`,
-        `**Action:** ${task}`,
-        `**Result:** ${contract || "A thorough, accurate, and immediately usable response."}`,
-        `**Example:**\n${example}`,
-        role ? `\nYou are ${role}.` : "",
-        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
-        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<context>\n${ctx || "No additional context provided."}\n</context>`,
+        `\n<action>\n${task}\n</action>`,
+        `\n<result>\n${contract || "A thorough, accurate, and immediately usable response."}\n</result>`,
+        `\n<example>\nProvide a concrete example illustrating the expected output quality and format.\n</example>`,
+        instructions.length ? `\n<guidelines>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</guidelines>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "RISE": {
-      // Role · Input · Steps · Expectation
       const steps = instructions.length
         ? instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")
         : "Follow best practices step by step.";
       return [
-        `**Role:** You are ${role || "an expert assistant"}.`,
-        `**Input:** ${task}${ctx ? `\n\nContext: ${ctx}` : ""}`,
-        `**Steps:**\n${steps}`,
-        `**Expectation:** ${contract || "A complete, high-quality response that leaves nothing important out."}`,
-        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+        `<role>\nYou are ${role || "an expert assistant"}.\n</role>`,
+        `\n<input>\n${task}${ctx ? `\n\nContext: ${ctx}` : ""}\n</input>`,
+        `\n<steps>\n${steps}\n</steps>`,
+        `\n<expectation>\n${contract || "A complete, high-quality response."}\n</expectation>`,
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "AIM": {
-      // Action · Intent · Metric
       return [
-        `**Action:** ${task}`,
-        `**Intent:** ${ctx || "To achieve a high-quality outcome that is immediately actionable."}`,
-        `**Metric:** ${contract || "Success = the response fully solves the task with no need for follow-up."}`,
-        role ? `\nYou are ${role}.` : "",
-        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
-        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<action>\n${task}\n</action>`,
+        `\n<intent>\n${ctx || "Achieve a high-quality outcome that is immediately actionable."}\n</intent>`,
+        `\n<metric>\n${contract || "Success = the response fully solves the task with no follow-up needed."}\n</metric>`,
+        instructions.length ? `\n<guidelines>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</guidelines>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "GRO": {
-      // Goal · Reason · Output
       return [
-        `**Goal:** ${task}`,
-        `**Reason:** ${ctx || "This is needed to achieve a high-quality, accurate, and complete result."}`,
-        `**Output:** ${contract || "A thorough, well-structured response ready to use immediately."}`,
-        role ? `\nYou are ${role}.` : "",
-        instructions.length ? `\nApproach:\n${instructions.join("\n")}` : "",
-        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<goal>\n${task}\n</goal>`,
+        `\n<reason>\n${ctx || "Needed to achieve a high-quality, accurate, and complete result."}\n</reason>`,
+        `\n<output>\n${contract || "A thorough, well-structured response ready to use immediately."}\n</output>`,
+        instructions.length ? `\n<approach>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</approach>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "FIT": {
-      // Format · Input · Task
-      const fmt = format || "Use the most appropriate format for clarity and usefulness.";
       return [
-        `**Format:** ${fmt}`,
-        `**Input:** ${ctx || task}`,
-        `**Task:** ${task}`,
-        role ? `\nYou are ${role}.` : "",
-        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
-        [contract, constraints, extras, avoid].filter(Boolean).join("\n") || "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<format>\n${format || "Use the most appropriate format for clarity and usefulness."}\n</format>`,
+        `\n<input>\n${ctx || task}\n</input>`,
+        `\n<task>\n${task}\n</task>`,
+        instructions.length ? `\n<guidelines>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</guidelines>` : "",
+        quality,
       ].filter(Boolean).join("\n");
     }
 
     case "LED": {
-      // Level · Expectation · Direction
       const level = state.audience
-        ? { Expert: "Expert — use precise terminology, skip basics", Intermediate: "Intermediate — explain specialized terms", Beginner: "Beginner — define all terms, assume no prior knowledge", "Non-technical": "Non-technical — use analogies and plain language", Mixed: "Mixed — accessible but not condescending" }[state.audience] ?? state.audience
-        : "Match the complexity to the task";
-      const direction = [
-        state.tone ? `Tone: ${state.tone}` : "",
-        format,
-        state.length ? `Length: ${state.length}` : "",
-      ].filter(Boolean).join(" · ") || "Clear, structured, and immediately useful";
+        ? { Expert: "Expert — precise terminology, skip basics", Intermediate: "Intermediate — explain specialized terms", Beginner: "Beginner — define all terms, no prior knowledge assumed", "Non-technical": "Non-technical — analogies and plain language", Mixed: "Mixed — accessible but not condescending" }[state.audience] ?? state.audience
+        : "Match complexity to the task";
       return [
-        `**Level:** ${level}`,
-        `**Expectation:** ${task}`,
-        `**Direction:** ${direction}`,
-        role ? `\nYou are ${role}.` : "",
-        ctx ? `\nContext: ${ctx}` : "",
-        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
-        [contract, extras, avoid].filter(Boolean).join("\n") || "",
+        role ? `<role>\nYou are ${role}.\n</role>\n` : "",
+        `<level>\n${level}\n</level>`,
+        `\n<expectation>\n${task}\n</expectation>`,
+        `\n<direction>\n${[state.tone ? `Tone: ${state.tone}` : "", format ? `Format: ${format}` : "", state.length ? `Length: ${state.length}` : ""].filter(Boolean).join("\n") || "Clear, structured, and immediately useful"}\n</direction>`,
+        ctx ? `\n<context>\n${ctx}\n</context>` : "",
+        instructions.length ? `\n<guidelines>\n${instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n</guidelines>` : "",
+        contract ? `\n<output_requirement>\n${contract}\n</output_requirement>` : "",
+        avoid ? `\n<avoid>\n${avoid}\n</avoid>` : "",
       ].filter(Boolean).join("\n");
     }
   }
 }
 
+// ── Public API ───────────────────────────────────────────────────
+
 export function generatePrompt(state: BuilderState): string {
-  // If a framework is selected, use structured framework output
   if (state.framework) {
     return applyFramework(state.framework, state);
   }
-
-  const sections: string[] = [];
-
-  const role = buildRoleSentence(state);
-  if (role) sections.push(role);
-
-  if ((state.context || "").trim()) {
-    sections.push(`Context: ${state.context.trim()}`);
-  }
-
-  sections.push(state.taskDescription.trim());
-
-  if (state.taskMode) {
-    const instructions = modeInstructions[state.taskMode];
-    if (instructions?.length) {
-      sections.push(instructions.join("\n"));
-    }
-    const contract = outputContracts[state.taskMode];
-    if (contract) sections.push(contract);
-  }
-
-  const constraints = buildConstraintsSentence(state);
-  if (constraints) sections.push(constraints);
-
-  const format = buildFormatSentence(state);
-  if (format) sections.push(format);
-
-  const extras = buildExtrasSentences(state);
-  if (extras) sections.push(extras);
-
-  const avoid = buildAvoidSentence(state);
-  if (avoid) sections.push(avoid);
-
-  return sections.join("\n\n");
+  return generateStructuredPrompt(state);
 }
 
 export function countWords(text: string): number {

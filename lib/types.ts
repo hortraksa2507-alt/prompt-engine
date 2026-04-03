@@ -51,9 +51,16 @@ export interface HistoryItem {
   starred?: boolean;
 }
 
+export type TemplateCategory =
+  | "developer" | "marketing" | "finance" | "research"
+  | "engineering" | "medical" | "architecture" | "problem-solving"
+  | "daily" | "social-media" | "writing" | "education";
+
 export interface Template {
   id: string;
   name: string;
+  nameKm?: string;
+  category?: TemplateCategory;
   state: BuilderState;
   isPreset: boolean;
 }
