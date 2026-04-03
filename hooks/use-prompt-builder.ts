@@ -18,10 +18,12 @@ import {
   addToHistory,
   deleteHistoryItem,
   clearHistory,
+  toggleStarHistoryItem,
   getTemplates,
   saveTemplate,
   deleteTemplate,
 } from "@/lib/storage";
+import { hapticMedium, hapticSuccess } from "@/lib/haptics";
 import { presetTemplates } from "@/lib/templates";
 
 const initialState: BuilderState = {
@@ -42,6 +44,7 @@ export function usePromptBuilder() {
   const [generatedPrompt, setGeneratedPrompt] = useState("");
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     setHistory(getHistory());
@@ -97,8 +100,11 @@ export function usePromptBuilder() {
 
   const canGenerate = state.taskMode !== null && state.taskDescription.trim().length > 0;
 
-  const generate = useCallback(() => {
-    if (!state.taskMode || !state.taskDescription.trim()) return "";
+  const generate = useCallback((): void => {
+    if (isGenerating) return;
+    if (!state.taskMode || !state.taskDescription.trim()) return;
+    setIsGenerating(true);
+    hapticMedium();
     const prompt = generatePrompt(state);
     setGeneratedPrompt(prompt);
 
@@ -111,8 +117,9 @@ export function usePromptBuilder() {
     };
     addToHistory(item);
     setHistory(getHistory());
-    return prompt;
-  }, [state]);
+    hapticSuccess();
+    setTimeout(() => setIsGenerating(false), 50);
+  }, [state, isGenerating]);
 
   const loadFromHistory = useCallback((item: HistoryItem) => {
     setGeneratedPrompt(item.generatedPrompt);
@@ -121,6 +128,21 @@ export function usePromptBuilder() {
   const removeHistoryItem = useCallback((id: string) => {
     deleteHistoryItem(id);
     setHistory(getHistory());
+  }, []);
+
+  const toggleStar = useCallback((id: string) => {
+    toggleStarHistoryItem(id);
+    setHistory(getHistory());
+  }, []);
+
+  const sharePrompt = useCallback(async (prompt: string) => {
+    try {
+      const { Share } = await import("@capacitor/share");
+      await Share.share({ title: "Prompt", text: prompt, dialogTitle: "Share Prompt" });
+    } catch {
+      // fallback to clipboard
+      await navigator.clipboard.writeText(prompt);
+    }
   }, []);
 
   const clearAllHistory = useCallback(() => {
@@ -167,6 +189,7 @@ export function usePromptBuilder() {
     history,
     allTemplates,
     canGenerate,
+    isGenerating,
     setTaskMode,
     setRole,
     setTaskDescription,
@@ -181,6 +204,8 @@ export function usePromptBuilder() {
     loadFromHistory,
     removeHistoryItem,
     clearAllHistory,
+    toggleStar,
+    sharePrompt,
     loadTemplate,
     saveAsTemplate,
     removeTemplate,

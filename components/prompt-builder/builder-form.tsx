@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { TaskModeGrid } from "./task-mode-grid";
 import { ChipSelector, MultiChipSelector } from "./chip-selector";
 import { PromptOutput } from "./prompt-output";
@@ -10,6 +10,7 @@ import {
   Length,
   Audience,
   ExtraInstruction,
+  TaskMode,
 } from "@/lib/types";
 import { usePromptBuilder } from "@/hooks/use-prompt-builder";
 import { useLocale } from "@/lib/locale-context";
@@ -17,7 +18,10 @@ import { TemplateSelector } from "@/components/templates/template-selector";
 import { cn } from "@/lib/utils";
 import { glass, glassSubtle, glassInput } from "@/lib/glass";
 import { useEffect } from "react";
-import { Sparkles, RotateCcw, ChevronDown, Settings2 } from "lucide-react";
+import { Sparkles, RotateCcw, ChevronDown, Settings2, Loader2 } from "lucide-react";
+import { hapticLight, hapticMedium } from "@/lib/haptics";
+import { setStorageErrorHandler } from "@/lib/storage";
+import { toast } from "sonner";
 
 const tones: Tone[] = ["Professional", "Casual", "Academic", "Friendly", "Direct", "Creative", "Technical"];
 const formats: OutputFormat[] = ["Paragraphs", "Bullet Points", "Step-by-Step", "Table", "Code Block", "JSON", "Markdown", "XML"];
@@ -47,6 +51,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
     state,
     generatedPrompt,
     canGenerate,
+    isGenerating,
     allTemplates,
     setTaskMode,
     setRole,
@@ -63,7 +68,19 @@ export function BuilderForm({ builder }: BuilderFormProps) {
     saveAsTemplate,
     removeTemplate,
     reset,
+    sharePrompt,
   } = builder;
+
+  const handleSetMode = useCallback(async (mode: TaskMode | null) => {
+    await hapticLight();
+    setTaskMode(mode);
+  }, [setTaskMode]);
+
+  useEffect(() => {
+    setStorageErrorHandler(() => {
+      toast.error(locale === "km" ? "កន្លែងផ្ទុកពេញ — សូមសម្អាតប្រវត្តិ" : "Storage full — clear some history to free space");
+    });
+  }, [locale]);
 
   // Count how many advanced options are selected
   const advancedCount = [state.tone, state.outputFormat, state.length, state.audience].filter(Boolean).length + state.extras.length;
@@ -99,7 +116,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
       {/* Task Mode */}
       <section className="space-y-3">
         <h2 className="text-[13px] font-semibold text-white/50">{t("whatDoYouNeed")}</h2>
-        <TaskModeGrid selected={state.taskMode} onSelect={setTaskMode} />
+        <TaskModeGrid selected={state.taskMode} onSelect={handleSetMode} />
       </section>
 
       {/* Role / Persona */}
@@ -147,6 +164,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
       <section className="rounded-2xl overflow-hidden" style={glass}>
         <button
           onClick={() => setAdvancedOpen(!advancedOpen)}
+          aria-label={locale === "km" ? "ជម្រើសកម្រិតខ្ពស់" : "Advanced Options"}
           className="w-full flex items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-white/[0.03]"
         >
           <div className="flex items-center gap-2">
@@ -200,7 +218,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
       </section>
 
       {/* Output — spacer before sticky CTA */}
-      <PromptOutput prompt={generatedPrompt} />
+      <PromptOutput prompt={generatedPrompt} onShare={sharePrompt} />
 
       {/* Fix 3: Sticky floating Generate CTA — appears when canGenerate */}
       <div
@@ -218,19 +236,26 @@ export function BuilderForm({ builder }: BuilderFormProps) {
         >
           <div className="flex gap-3">
             <button
-              onClick={() => { if (canGenerate) generate(); }}
+              onClick={async () => { await hapticMedium(); if (canGenerate) generate(); }}
+              disabled={isGenerating}
               className={cn(
                 "flex-1 rounded-2xl py-4 text-[15px] font-semibold text-white active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2",
+                isGenerating && "opacity-80",
                 locale === "km"
                   ? "bg-gradient-to-r from-amber-500 to-yellow-400 shadow-[0_4px_24px_rgba(201,162,39,0.35)] hover:shadow-[0_4px_32px_rgba(201,162,39,0.5)]"
                   : "bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-[0_4px_24px_rgba(40,200,140,0.3)] hover:shadow-[0_4px_32px_rgba(40,200,140,0.4)]"
               )}
             >
-              <Sparkles className="w-4 h-4" strokeWidth={2} />
+              {isGenerating ? (
+                <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
+              ) : (
+                <Sparkles className="w-4 h-4" strokeWidth={2} />
+              )}
               {t("generatePrompt")}
             </button>
             <button
               onClick={reset}
+              aria-label={locale === "km" ? "កំណត់ឡើងវិញ" : "Reset"}
               className="rounded-2xl px-5 py-4 text-white/35 hover:text-white/60 transition-all active:scale-[0.96]"
               style={glassSubtle}
             >

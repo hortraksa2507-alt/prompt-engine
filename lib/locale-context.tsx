@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { Locale, t as translate, TranslationKey } from "./i18n";
+import { getSetting, setSetting } from "@/lib/storage";
 
 interface LocaleContextValue {
   locale: Locale;
@@ -16,10 +17,14 @@ const LocaleContext = createContext<LocaleContextValue>({
 });
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>(() => getSetting<Locale>("locale", "en"));
 
   const toggleLocale = useCallback(() => {
-    setLocale((l) => (l === "en" ? "km" : "en"));
+    setLocale((l) => {
+      const next = l === "en" ? "km" : "en";
+      setSetting("locale", next);
+      return next;
+    });
   }, []);
 
   // Sync locale class to body so CSS vars cascade to body background

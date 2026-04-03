@@ -43,6 +43,7 @@ export interface HistoryItem {
   taskMode: TaskMode;
   taskDescription: string;
   generatedPrompt: string;
+  starred?: boolean;
 }
 
 export interface Template {

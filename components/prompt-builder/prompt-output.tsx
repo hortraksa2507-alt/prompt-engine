@@ -6,10 +6,12 @@ import { useLocale } from "@/lib/locale-context";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { glassCard, glassSubtle, glassChipActive } from "@/lib/glass";
-import { Copy, Check, ExternalLink, Sparkles, FileText } from "lucide-react";
+import { hapticSuccess, hapticLight } from "@/lib/haptics";
+import { Copy, Check, ExternalLink, Sparkles, FileText, Share2 } from "lucide-react";
 
 interface PromptOutputProps {
   prompt: string;
+  onShare?: (prompt: string) => Promise<void>;
 }
 
 function highlightXml(text: string): React.ReactNode[] {
@@ -26,7 +28,7 @@ function highlightXml(text: string): React.ReactNode[] {
   });
 }
 
-export function PromptOutput({ prompt }: PromptOutputProps) {
+export function PromptOutput({ prompt, onShare }: PromptOutputProps) {
   const [copied, setCopied] = useState(false);
   const { t, locale } = useLocale();
 
@@ -48,22 +50,18 @@ export function PromptOutput({ prompt }: PromptOutputProps) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(prompt);
+      await hapticSuccess();
       setCopied(true);
       toast.success(t("copied"));
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = prompt;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      setCopied(true);
-      toast.success(t("copied"));
-      setTimeout(() => setCopied(false), 2000);
+      toast.error(locale === "km" ? "មិនអាចចម្លងបានទេ" : "Failed to copy");
     }
+  };
+
+  const handleShare = async () => {
+    await hapticLight();
+    await onShare?.(prompt);
   };
 
   const words = countWords(prompt);
@@ -84,13 +82,27 @@ export function PromptOutput({ prompt }: PromptOutputProps) {
         </div>
         <div className="flex gap-2">
           <button
+            aria-label={locale === "km" ? "បើក Claude" : "Open Claude"}
             className="flex items-center gap-1.5 text-[12px] text-white/35 hover:text-white/60 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/[0.05]"
             onClick={() => window.open("https://claude.ai/new", "_blank")}
           >
             <ExternalLink className="w-3 h-3" />
             {t("openClaude")}
           </button>
+          {onShare && (
+            <button
+              aria-label={locale === "km" ? "ចែករំលែក" : "Share"}
+              onClick={handleShare}
+              className={cn(
+                "flex items-center gap-1.5 text-[12px] font-medium px-2.5 py-1.5 rounded-lg transition-colors hover:bg-white/[0.05]",
+                locale === "km" ? "text-amber-300/60 hover:text-amber-200" : "text-emerald-300/60 hover:text-emerald-200"
+              )}
+            >
+              <Share2 className="w-3 h-3" />
+            </button>
+          )}
           <button
+            aria-label={locale === "km" ? "ចម្លង" : "Copy prompt"}
             onClick={handleCopy}
             className={cn(
               "flex items-center gap-1.5 text-[12px] font-medium px-3.5 py-1.5 rounded-full transition-all duration-300",

@@ -8,17 +8,23 @@ import { useLocale } from "@/lib/locale-context";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { glass, glassSubtle, glassActive, glassAccent } from "@/lib/glass";
-import { Zap, Clock, Globe } from "lucide-react";
+import { Zap, Clock, Globe, SlidersHorizontal } from "lucide-react";
+import { OnboardingModal } from "@/components/onboarding/onboarding-modal";
+import { SettingsModal } from "@/components/settings/settings-modal";
 
 type Tab = "builder" | "history";
 
 export default function Home() {
   const [tab, setTab] = useState<Tab>("builder");
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const builder = usePromptBuilder();
   const { locale, toggleLocale, t } = useLocale();
 
   return (
     <div className={cn("relative min-h-dvh safe-area-top safe-area-bottom", locale === "km" && "locale-km")}>
+      <OnboardingModal />
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
       <Toaster
         position="top-center"
         toastOptions={{
@@ -37,6 +43,7 @@ export default function Home() {
 
       {/* Header — Fix 1: will-change for compositing, no backdrop-filter conflict */}
       <header
+        role="banner"
         className="sticky top-0 z-50 will-change-transform"
         style={{
           ...glass,
@@ -62,26 +69,40 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Fix 6: Better language switcher with Globe icon + clear label */}
-            <button
-              onClick={toggleLocale}
-              className={cn(
-                "flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-[0.95]",
-                locale === "km" ? "km-lang-active" : ""
-              )}
-              style={locale === "km" ? undefined : glassSubtle}
-              title={t("language")}
-            >
-              <Globe className="w-4 h-4" />
-              <span>{locale === "en" ? "ខ្មែរ" : "EN"}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Fix 6: Better language switcher with Globe icon + clear label */}
+              <button
+                onClick={toggleLocale}
+                className={cn(
+                  "flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-[0.95]",
+                  locale === "km" ? "km-lang-active" : ""
+                )}
+                style={locale === "km" ? undefined : glassSubtle}
+                title={t("language")}
+              >
+                <Globe className="w-4 h-4" />
+                <span>{locale === "en" ? "ខ្មែរ" : "EN"}</span>
+              </button>
+
+              {/* Settings button */}
+              <button
+                onClick={() => setSettingsOpen(true)}
+                aria-label={locale === "km" ? "ការកំណត់" : "Settings"}
+                className="flex items-center justify-center w-9 h-9 rounded-xl transition-all active:scale-[0.95]"
+                style={glassSubtle}
+              >
+                <SlidersHorizontal className="w-4 h-4 text-white/50" />
+              </button>
+            </div>
           </div>
 
           {/* Segmented control */}
-          <div className="flex rounded-2xl p-1" style={glassSubtle}>
+          <div className="flex rounded-2xl p-1" style={glassSubtle} role="tablist">
             {(["builder", "history"] as const).map((tabKey) => (
               <button
                 key={tabKey}
+                role="tab"
+                aria-selected={tab === tabKey}
                 onClick={() => setTab(tabKey)}
                 className={cn(
                   "flex-1 py-2 text-[13px] font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5",
@@ -109,7 +130,7 @@ export default function Home() {
       {/* Fix 1: Removed animate-fade-in-up from main — it creates a compositing layer
           that clips content below the fold when combined with sticky header backdrop-filter.
           Added pb-28 for sticky CTA clearance. */}
-      <main className="relative z-10 max-w-2xl mx-auto px-5 py-6 pb-28">
+      <main role="main" className="relative z-10 max-w-2xl mx-auto px-5 py-6 pb-28">
         {tab === "builder" ? (
           <BuilderForm builder={builder} />
         ) : (
@@ -121,6 +142,7 @@ export default function Home() {
             }}
             onDelete={builder.removeHistoryItem}
             onClearAll={builder.clearAllHistory}
+            onToggleStar={builder.toggleStar}
           />
         )}
       </main>
