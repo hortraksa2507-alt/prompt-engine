@@ -65,8 +65,10 @@ export default function Home() {
             {/* Fix 6: Better language switcher with Globe icon + clear label */}
             <button
               onClick={toggleLocale}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-[0.95]"
-              className={locale === "km" ? "km-lang-active" : ""}
+              className={cn(
+                "flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-[0.95]",
+                locale === "km" ? "km-lang-active" : ""
+              )}
               style={locale === "km" ? undefined : glassSubtle}
               title={t("language")}
             >
