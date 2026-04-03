@@ -76,10 +76,10 @@ export default function Home() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={glassActive}
               >
-                <Zap className="w-4 h-4" style={{ color: "rgba(var(--accent-rgb), 0.9)" }} />
+                <Zap className="w-[18px] h-[18px]" style={{ color: "rgba(var(--accent-rgb), 0.9)" }} />
               </div>
               <div>
                 <h1 className={cn("text-[17px] font-bold text-white tracking-tight", locale === "km" && "km-app-name")}>{t("appName")}</h1>
@@ -92,7 +92,8 @@ export default function Home() {
               <button
                 onClick={toggleLocale}
                 className={cn(
-                  "flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-bold transition-all duration-300 active:scale-[0.95]",
+                  "flex items-center gap-2 px-3.5 min-h-[44px] rounded-xl text-[12px] font-bold",
+                  "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.95]",
                   locale === "km" ? "km-lang-active" : ""
                 )}
                 style={locale === "km" ? undefined : glassSubtle}
@@ -106,7 +107,7 @@ export default function Home() {
               <button
                 onClick={() => setSettingsOpen(true)}
                 aria-label={locale === "km" ? "ការកំណត់" : "Settings"}
-                className="flex items-center justify-center w-9 h-9 rounded-xl transition-all active:scale-[0.95]"
+                className="flex items-center justify-center w-11 h-11 rounded-xl transition-all ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.95]"
                 style={glassSubtle}
               >
                 <SlidersHorizontal className="w-4 h-4 text-white/50" />

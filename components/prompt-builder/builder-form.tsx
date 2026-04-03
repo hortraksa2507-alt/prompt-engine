@@ -134,45 +134,48 @@ export function BuilderForm({ builder }: BuilderFormProps) {
 
       {/* Role / Persona */}
       <section className="space-y-2">
-        <label className="text-[13px] font-semibold text-white/50">
+        <label htmlFor="pe-role" className="text-[13px] font-semibold text-white/50">
           {t("roleLabel")} <span className="text-white/20 font-normal">({t("optional")})</span>
         </label>
         <input
+          id="pe-role"
           type="text"
           inputMode="text"
           placeholder={t("rolePlaceholder")}
           value={state.role}
           onChange={(e) => setRole(e.target.value)}
           onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
-          className="w-full rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 outline-none focus:ring-2 focus:ring-white/10"
+          className="w-full rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3.5 outline-none"
           style={glassInput}
         />
       </section>
 
       {/* Task Description */}
       <section className="space-y-2">
-        <label className="text-[13px] font-semibold text-white/50">{t("describeTask")}</label>
+        <label htmlFor="pe-task" className="text-[13px] font-semibold text-white/50">{t("describeTask")}</label>
         <textarea
+          id="pe-task"
           placeholder={t("taskPlaceholder")}
           value={state.taskDescription}
           onChange={(e) => setTaskDescription(e.target.value)}
           onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
-          className="w-full min-h-[100px] rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 resize-none outline-none focus:ring-2 focus:ring-white/10"
+          className="w-full min-h-[100px] rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3.5 resize-none outline-none"
           style={glassInput}
         />
       </section>
 
       {/* Context */}
       <section className="space-y-2">
-        <label className="text-[13px] font-semibold text-white/50">
+        <label htmlFor="pe-context" className="text-[13px] font-semibold text-white/50">
           {t("context")} <span className="text-white/20 font-normal">({t("optional")})</span>
         </label>
         <textarea
+          id="pe-context"
           placeholder={t("contextPlaceholder")}
           value={state.context}
           onChange={(e) => setContext(e.target.value)}
           onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
-          className="w-full min-h-[80px] rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 resize-none outline-none focus:ring-2 focus:ring-white/10"
+          className="w-full min-h-[80px] rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3.5 resize-none outline-none"
           style={glassInput}
         />
       </section>
@@ -220,17 +223,18 @@ export function BuilderForm({ builder }: BuilderFormProps) {
 
               {/* Avoid */}
               <div className="space-y-2">
-                <label className="text-[13px] font-semibold text-white/50">
+                <label htmlFor="pe-avoid" className="text-[13px] font-semibold text-white/50">
                   {t("avoid")} <span className="text-white/20 font-normal">({t("optional")})</span>
                 </label>
                 <input
+                  id="pe-avoid"
                   type="text"
                   inputMode="text"
                   placeholder={t("avoidPlaceholder")}
                   value={state.avoid}
                   onChange={(e) => setAvoid(e.target.value)}
                   onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
-                  className="w-full rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 outline-none focus:ring-2 focus:ring-white/10"
+                  className="w-full rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3.5 outline-none"
                   style={glassInput}
                 />
               </div>

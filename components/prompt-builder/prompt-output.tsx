@@ -36,10 +36,10 @@ export function PromptOutput({ prompt, onShare }: PromptOutputProps) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 animate-float"
           style={glassSubtle}
         >
-          <Sparkles className="w-6 h-6 text-white/20" strokeWidth={1.5} />
+          <Sparkles className="w-6 h-6" style={{ color: "rgba(var(--accent-rgb), 0.2)" }} strokeWidth={1.5} />
         </div>
         <p className="text-white/25 text-sm font-medium">{t("promptWillAppear")}</p>
         <p className="text-white/15 text-xs mt-1.5">{t("selectModeToStart")}</p>

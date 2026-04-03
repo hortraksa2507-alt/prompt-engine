@@ -44,14 +44,24 @@ export function TaskModeGrid({ selected, onSelect }: TaskModeGridProps) {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {modes.map((mode) => {
+      {modes.map((mode, i) => {
         const isActive = selected === mode.id;
         const Icon = mode.icon;
         return (
           <button
             key={mode.id}
             onClick={() => onSelect(isActive ? null : mode.id)}
-            className="flex flex-col items-center gap-2 rounded-2xl px-4 py-5 transition-all duration-300 active:scale-[0.96]"
+            className={cn(
+              "flex flex-col items-center gap-2 rounded-2xl px-4 py-5 min-h-[100px]",
+              "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.96]",
+              "animate-stagger",
+              i === 0 && "animate-stagger-1",
+              i === 1 && "animate-stagger-2",
+              i === 2 && "animate-stagger-3",
+              i === 3 && "animate-stagger-1",
+              i === 4 && "animate-stagger-2",
+              i === 5 && "animate-stagger-3",
+            )}
             style={{
               ...(isActive ? glassActive : glassSubtle),
               ...(isActive ? { boxShadow: `inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 24px ${mode.glowColor}, 0 0 40px ${mode.glowColor}` } : {}),
