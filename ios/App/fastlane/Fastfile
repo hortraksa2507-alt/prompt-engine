@@ -1,0 +1,56 @@
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Sync certificates and profiles (read-only, for local builds)"
+  lane :certs do
+    match(type: "appstore", readonly: true)
+  end
+
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    # 1. Bump build number to current timestamp (avoids conflicts)
+    increment_build_number(
+      build_number: Time.now.strftime("%Y%m%d%H%M"),
+      xcodeproj: "App.xcodeproj"
+    )
+
+    # 2. Sync App Store certificates & provisioning profiles
+    match(type: "appstore", readonly: true)
+
+    # 3. Build
+    build_app(
+      scheme: "App",
+      workspace: "App.xcworkspace",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.raksa.promptengine" => "match AppStore com.raksa.promptengine"
+        }
+      },
+      output_directory: "./build",
+      output_name: "PromptEngine.ipa",
+      clean: true
+    )
+
+    # 4. Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      changelog: "Bug fixes and improvements"
+    )
+  end
+
+  desc "Build only (no upload) — for local testing"
+  lane :build_only do
+    match(type: "appstore", readonly: true)
+    build_app(
+      scheme: "App",
+      workspace: "App.xcworkspace",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "PromptEngine.ipa",
+      clean: true
+    )
+  end
+
+end

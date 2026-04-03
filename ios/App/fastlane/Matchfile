@@ -1,0 +1,7 @@
+git_url("") # e.g. "https://github.com/yourusername/certs-private-repo.git"
+# Or use: storage_mode("google_cloud") / storage_mode("s3")
+
+storage_mode("git")
+type("appstore")
+app_identifier(["com.raksa.promptengine"])
+username("") # Your Apple ID email

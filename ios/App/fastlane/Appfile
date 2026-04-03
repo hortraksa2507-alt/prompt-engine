@@ -1,0 +1,5 @@
+app_identifier("com.raksa.promptengine")
+apple_id("") # Fill in your Apple ID email
+
+itc_team_id("") # App Store Connect Team ID (find at appstoreconnect.apple.com)
+team_id("")     # Developer Portal Team ID (find at developer.apple.com/account)
