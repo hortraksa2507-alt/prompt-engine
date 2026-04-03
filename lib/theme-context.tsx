@@ -22,9 +22,14 @@ export function ThemeProvider({
   children: ReactNode;
   locale: Locale;
 }) {
-  const [themeId, setThemeId] = useState<ThemeId>(() =>
-    getSetting<ThemeId>("theme", DEFAULT_THEME[locale])
-  );
+  // Start with default (SSR-safe), then hydrate from localStorage on client
+  const [themeId, setThemeId] = useState<ThemeId>(DEFAULT_THEME[locale]);
+
+  useEffect(() => {
+    const stored = getSetting<ThemeId>("theme", DEFAULT_THEME[locale]);
+    setThemeId(stored);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setTheme = useCallback((id: ThemeId) => {
     setThemeId(id);

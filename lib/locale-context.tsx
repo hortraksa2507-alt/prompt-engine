@@ -18,7 +18,13 @@ const LocaleContext = createContext<LocaleContextValue>({
 });
 
 function LocaleCore({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(() => getSetting<Locale>("locale", "en"));
+  const [locale, setLocale] = useState<Locale>("en");
+
+  useEffect(() => {
+    const stored = getSetting<Locale>("locale", "en");
+    setLocale(stored);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleLocale = useCallback(() => {
     setLocale((l) => {
