@@ -1,5 +1,8 @@
 export type TaskMode = "write" | "code" | "analyze" | "debug" | "learn" | "brainstorm";
 
+export type PromptFramework =
+  | "TAG" | "BAB" | "RTF" | "CARE" | "RISE" | "AIM" | "GRO" | "FIT" | "LED";
+
 export interface TaskModeOption {
   id: TaskMode;
   label: string;
@@ -27,6 +30,7 @@ export type ExtraInstruction =
 
 export interface BuilderState {
   taskMode: TaskMode | null;
+  framework?: PromptFramework | null;
   role: string;
   taskDescription: string;
   context: string;

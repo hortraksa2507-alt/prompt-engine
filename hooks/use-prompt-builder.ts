@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import {
   BuilderState,
   TaskMode,
+  PromptFramework,
   Tone,
   OutputFormat,
   Length,
@@ -28,6 +29,7 @@ import { presetTemplates } from "@/lib/templates";
 
 const initialState: BuilderState = {
   taskMode: null,
+  framework: null,
   role: "",
   taskDescription: "",
   context: "",
@@ -55,6 +57,10 @@ export function usePromptBuilder() {
 
   const setTaskMode = useCallback((mode: TaskMode | null) => {
     setState((s) => ({ ...s, taskMode: mode }));
+  }, []);
+
+  const setFramework = useCallback((fw: PromptFramework | null) => {
+    setState((s) => ({ ...s, framework: fw }));
   }, []);
 
   const setTaskDescription = useCallback((v: string) => {
@@ -203,6 +209,7 @@ export function usePromptBuilder() {
     canGenerate,
     isGenerating,
     setTaskMode,
+    setFramework,
     setRole,
     setTaskDescription,
     setContext,

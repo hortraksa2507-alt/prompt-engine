@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { TaskModeGrid } from "./task-mode-grid";
+import { FrameworkPicker } from "./framework-picker";
 import { ChipSelector, MultiChipSelector } from "./chip-selector";
 import { PromptOutput } from "./prompt-output";
 import {
@@ -11,6 +12,7 @@ import {
   Audience,
   ExtraInstruction,
   TaskMode,
+  PromptFramework,
 } from "@/lib/types";
 import { usePromptBuilder } from "@/hooks/use-prompt-builder";
 import { useLocale } from "@/lib/locale-context";
@@ -55,6 +57,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
     isGenerating,
     allTemplates,
     setTaskMode,
+    setFramework,
     setRole,
     setTaskDescription,
     setContext,
@@ -77,6 +80,10 @@ export function BuilderForm({ builder }: BuilderFormProps) {
     setTaskMode(mode);
   }, [setTaskMode]);
 
+  const handleSetFramework = useCallback(async (fw: PromptFramework | null) => {
+    setFramework(fw);
+  }, [setFramework]);
+
   useEffect(() => {
     setStorageErrorHandler(() => {
       toast.error(locale === "km" ? "កន្លែងផ្ទុកពេញ — សូមសម្អាតប្រវត្តិ" : "Storage full — clear some history to free space");
@@ -84,7 +91,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
   }, [locale]);
 
   // Count how many advanced options are selected
-  const advancedCount = [state.tone, state.outputFormat, state.length, state.audience].filter(Boolean).length + state.extras.length;
+  const advancedCount = [state.tone, state.outputFormat, state.length, state.audience].filter(Boolean).length + state.extras.length + (state.framework ? 1 : 0);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -118,6 +125,11 @@ export function BuilderForm({ builder }: BuilderFormProps) {
       <section className="space-y-3">
         <h2 className="text-[13px] font-semibold text-white/50">{t("whatDoYouNeed")}</h2>
         <TaskModeGrid selected={state.taskMode} onSelect={handleSetMode} />
+      </section>
+
+      {/* Prompt Framework */}
+      <section>
+        <FrameworkPicker selected={state.framework ?? null} onSelect={handleSetFramework} />
       </section>
 
       {/* Role / Persona */}

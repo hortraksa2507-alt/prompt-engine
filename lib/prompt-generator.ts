@@ -1,4 +1,4 @@
-import { BuilderState } from "./types";
+import { BuilderState, PromptFramework } from "./types";
 
 const modeExamples: Record<string, string> = {
   write: `Example of the output quality and style I want:
@@ -207,7 +207,156 @@ function buildAvoidSentence(state: BuilderState): string {
   return `Do not include: ${avoid}.`;
 }
 
+// ── Framework-based prompt builders ──────────────────────────────
+
+function applyFramework(framework: PromptFramework, state: BuilderState): string {
+  const task = state.taskDescription.trim();
+  const role = (state.role || "").trim() || (state.taskMode ? modeRoles[state.taskMode] : "");
+  const ctx = (state.context || "").trim();
+  const instructions = state.taskMode ? (modeInstructions[state.taskMode] || []) : [];
+  const contract = state.taskMode ? outputContracts[state.taskMode] : "";
+  const constraints = buildConstraintsSentence(state);
+  const format = buildFormatSentence(state);
+  const extras = buildExtrasSentences(state);
+  const avoid = buildAvoidSentence(state);
+
+  const quality = [contract, constraints, format, extras, avoid].filter(Boolean).join("\n");
+
+  switch (framework) {
+    case "TAG": {
+      // Task · Action · Goal
+      const actionLines = instructions.slice(0, 4).join("\n");
+      return [
+        `**Task:** ${task}`,
+        `**Action:** ${actionLines || "Follow best practices for this type of task."}`,
+        `**Goal:** ${contract || "Deliver a high-quality, complete response that fully addresses the task."}`,
+        role ? `\nYou are ${role}.` : "",
+        ctx ? `\nContext: ${ctx}` : "",
+        quality ? `\n${quality}` : "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "BAB": {
+      // Before · After · Bridge
+      return [
+        ctx ? `**Before (Current situation):** ${ctx}` : `**Before (Current situation):** [Describe the current state or problem]`,
+        `**After (Desired outcome):** ${contract || "A complete, high-quality response that fully solves the task."}`,
+        `**Bridge (How to get there):** ${task}`,
+        role ? `\nYou are ${role}.` : "",
+        instructions.length ? `\nApproach:\n${instructions.join("\n")}` : "",
+        quality ? `\n${quality}` : "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "RTF": {
+      // Role · Task · Format
+      const fmt = format || "Use the clearest format for this type of content.";
+      return [
+        `**Role:** You are ${role || "an expert assistant"}.`,
+        `**Task:** ${task}`,
+        `**Format:** ${fmt}`,
+        ctx ? `\nContext: ${ctx}` : "",
+        instructions.length ? `\nInstructions:\n${instructions.join("\n")}` : "",
+        [contract, constraints, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "CARE": {
+      // Context · Action · Result · Example
+      const example = state.taskMode && modeExamples[state.taskMode]
+        ? modeExamples[state.taskMode]
+        : "Provide a concrete example illustrating the expected output quality and format.";
+      return [
+        `**Context:** ${ctx || "No additional context provided."}`,
+        `**Action:** ${task}`,
+        `**Result:** ${contract || "A thorough, accurate, and immediately usable response."}`,
+        `**Example:**\n${example}`,
+        role ? `\nYou are ${role}.` : "",
+        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
+        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "RISE": {
+      // Role · Input · Steps · Expectation
+      const steps = instructions.length
+        ? instructions.map((s, i) => `${i + 1}. ${s}`).join("\n")
+        : "Follow best practices step by step.";
+      return [
+        `**Role:** You are ${role || "an expert assistant"}.`,
+        `**Input:** ${task}${ctx ? `\n\nContext: ${ctx}` : ""}`,
+        `**Steps:**\n${steps}`,
+        `**Expectation:** ${contract || "A complete, high-quality response that leaves nothing important out."}`,
+        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "AIM": {
+      // Action · Intent · Metric
+      return [
+        `**Action:** ${task}`,
+        `**Intent:** ${ctx || "To achieve a high-quality outcome that is immediately actionable."}`,
+        `**Metric:** ${contract || "Success = the response fully solves the task with no need for follow-up."}`,
+        role ? `\nYou are ${role}.` : "",
+        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
+        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "GRO": {
+      // Goal · Reason · Output
+      return [
+        `**Goal:** ${task}`,
+        `**Reason:** ${ctx || "This is needed to achieve a high-quality, accurate, and complete result."}`,
+        `**Output:** ${contract || "A thorough, well-structured response ready to use immediately."}`,
+        role ? `\nYou are ${role}.` : "",
+        instructions.length ? `\nApproach:\n${instructions.join("\n")}` : "",
+        [constraints, format, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "FIT": {
+      // Format · Input · Task
+      const fmt = format || "Use the most appropriate format for clarity and usefulness.";
+      return [
+        `**Format:** ${fmt}`,
+        `**Input:** ${ctx || task}`,
+        `**Task:** ${task}`,
+        role ? `\nYou are ${role}.` : "",
+        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
+        [contract, constraints, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+
+    case "LED": {
+      // Level · Expectation · Direction
+      const level = state.audience
+        ? { Expert: "Expert — use precise terminology, skip basics", Intermediate: "Intermediate — explain specialized terms", Beginner: "Beginner — define all terms, assume no prior knowledge", "Non-technical": "Non-technical — use analogies and plain language", Mixed: "Mixed — accessible but not condescending" }[state.audience] ?? state.audience
+        : "Match the complexity to the task";
+      const direction = [
+        state.tone ? `Tone: ${state.tone}` : "",
+        format,
+        state.length ? `Length: ${state.length}` : "",
+      ].filter(Boolean).join(" · ") || "Clear, structured, and immediately useful";
+      return [
+        `**Level:** ${level}`,
+        `**Expectation:** ${task}`,
+        `**Direction:** ${direction}`,
+        role ? `\nYou are ${role}.` : "",
+        ctx ? `\nContext: ${ctx}` : "",
+        instructions.length ? `\nGuidelines:\n${instructions.join("\n")}` : "",
+        [contract, extras, avoid].filter(Boolean).join("\n") || "",
+      ].filter(Boolean).join("\n");
+    }
+  }
+}
+
 export function generatePrompt(state: BuilderState): string {
+  // If a framework is selected, use structured framework output
+  if (state.framework) {
+    return applyFramework(state.framework, state);
+  }
+
   const sections: string[] = [];
 
   const role = buildRoleSentence(state);
