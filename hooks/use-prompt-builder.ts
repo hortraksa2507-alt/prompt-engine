@@ -105,19 +105,24 @@ export function usePromptBuilder() {
     if (!state.taskMode || !state.taskDescription.trim()) return;
     setIsGenerating(true);
     hapticMedium();
-    const prompt = generatePrompt(state);
-    setGeneratedPrompt(prompt);
+    try {
+      const prompt = generatePrompt(state);
+      setGeneratedPrompt(prompt);
 
-    const item: HistoryItem = {
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      taskMode: state.taskMode,
-      taskDescription: state.taskDescription,
-      generatedPrompt: prompt,
-    };
-    addToHistory(item);
-    setHistory(getHistory());
-    hapticSuccess();
+      const item: HistoryItem = {
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+        taskMode: state.taskMode,
+        taskDescription: state.taskDescription,
+        generatedPrompt: prompt,
+      };
+      addToHistory(item);
+      setHistory(getHistory());
+      hapticSuccess();
+    } catch (err) {
+      console.error("Prompt generation failed:", err);
+      // Don't crash — just leave the existing prompt or empty
+    }
     setTimeout(() => setIsGenerating(false), 50);
   }, [state, isGenerating]);
 
@@ -140,8 +145,15 @@ export function usePromptBuilder() {
       const { Share } = await import("@capacitor/share");
       await Share.share({ title: "Prompt", text: prompt, dialogTitle: "Share Prompt" });
     } catch {
-      // fallback to clipboard
-      await navigator.clipboard.writeText(prompt);
+      try {
+        await navigator.clipboard.writeText(prompt);
+        // Dynamically import toast since we're in a hook
+        const { toast } = await import("sonner");
+        toast.success("Copied to clipboard");
+      } catch {
+        const { toast } = await import("sonner");
+        toast.error("Could not share — please copy manually");
+      }
     }
   }, []);
 

@@ -1,5 +1,60 @@
 import { BuilderState } from "./types";
 
+const modeExamples: Record<string, string> = {
+  write: `Example of the output quality and style I want:
+
+---
+[Your example content goes here — paste or describe a piece of writing you admire]
+---
+
+Match this level of clarity, specificity, and engagement.`,
+  code: `Example of the code style I want:
+
+\`\`\`
+// Clean, well-named, with minimal comments
+function processUserInput(input: string): Result {
+  const validated = validate(input);
+  if (!validated.ok) return { error: validated.error };
+  return { data: transform(validated.data) };
+}
+\`\`\`
+
+Write code at this level of clarity and structure.`,
+  analyze: `Example of the analysis depth and structure I want:
+
+**Finding:** [Specific observation with data]
+**Evidence:** [Concrete supporting detail]
+**Implication:** [What this means for decisions]
+**Recommendation:** [Specific, actionable next step]
+
+Use this structure for each key finding.`,
+  debug: `Example of the debugging reasoning I want:
+
+**Observed:** [What actually happens]
+**Expected:** [What should happen]
+**Hypothesis:** [Most likely root cause]
+**Test:** [How to verify hypothesis]
+**Fix:** [Exact change needed]
+**Prevention:** [How to avoid recurrence]`,
+  learn: `Example of the explanation depth I want:
+
+Start simple: [One-sentence core concept]
+Build up: [Add one layer of nuance]
+Concrete: [Runnable example]
+Common mistake: [What beginners get wrong and why]
+
+Keep explanations at this progressive depth.`,
+  brainstorm: `Example of the idea format I want:
+
+**Idea:** [Name]
+**What:** [One sentence description]
+**Why it works:** [Core insight]
+**Risk:** [Main challenge]
+**Impact/Effort:** High/Low
+
+Generate all ideas in this structured format.`,
+};
+
 const modeRoles: Record<string, string> = {
   write: "an expert content strategist and writer with 15+ years crafting high-impact content across industries — blogs, white papers, marketing copy, technical docs, and executive communications",
   code: "a principal software engineer with 15+ years building production systems at scale — you write code that is clean, idiomatic, secure, thoroughly tested, and maintainable by teams",
@@ -139,6 +194,9 @@ function buildExtrasSentences(state: BuilderState): string {
     "Actionable output": "Every recommendation must be immediately actionable — include specific next steps, not general advice.",
     "Include code snippets": "Include inline code snippets to illustrate key points. Snippets should be self-contained and runnable.",
     "Compare approaches": "Compare approaches in a structured way: list each option, its trade-offs, and when to prefer it.",
+    "Include example format": state.taskMode && modeExamples[state.taskMode]
+      ? modeExamples[state.taskMode]
+      : "Include a concrete example that shows the exact output format and quality you want.",
   };
   return state.extras.map((e) => extraMap[e] || e).join(" ");
 }

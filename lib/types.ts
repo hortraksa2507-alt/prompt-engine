@@ -22,7 +22,8 @@ export type ExtraInstruction =
   | "Be critical / honest"
   | "Actionable output"
   | "Include code snippets"
-  | "Compare approaches";
+  | "Compare approaches"
+  | "Include example format";
 
 export interface BuilderState {
   taskMode: TaskMode | null;

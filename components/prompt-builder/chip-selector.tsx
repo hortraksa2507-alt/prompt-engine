@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/locale-context";
 import { TranslationKey } from "@/lib/i18n";
 import { glassChip, glassChipActive } from "@/lib/glass";
+import { hapticLight } from "@/lib/haptics";
 import { Check } from "lucide-react";
 
 interface ChipSelectorProps<T extends string> {
@@ -37,7 +38,7 @@ export function ChipSelector<T extends string>({
           return (
             <button
               key={opt}
-              onClick={() => onSelect(isActive ? null : opt)}
+              onClick={async () => { await hapticLight(); onSelect(isActive ? null : opt); }}
               className={cn(
                 "rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-all duration-200 active:scale-[0.95]",
                 isActive ? "text-white" : "text-white/50 hover:text-white/70"
@@ -90,7 +91,7 @@ export function MultiChipSelector<T extends string>({
           return (
             <button
               key={opt}
-              onClick={() => onToggle(opt)}
+              onClick={async () => { await hapticLight(); onToggle(opt); }}
               className={cn(
                 "rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-all duration-200 flex items-center gap-1 active:scale-[0.95]",
                 isActive ? "text-white" : "text-white/50 hover:text-white/70"

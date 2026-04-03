@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BuilderForm } from "@/components/prompt-builder/builder-form";
 import { HistoryPanel } from "@/components/history/history-panel";
 import { usePromptBuilder } from "@/hooks/use-prompt-builder";
@@ -20,13 +20,31 @@ export default function Home() {
   const builder = usePromptBuilder();
   const { locale, toggleLocale, t } = useLocale();
 
+  useEffect(() => {
+    const handler = () => {
+      // After onboarding, switch to builder tab and give a subtle visual cue
+      setTab("builder");
+      // Optional: auto-show templates after short delay
+      setTimeout(() => {
+        // show a one-time toast hint
+        import("sonner").then(({ toast }) => {
+          toast("Pick a template or select a mode to start ✨", {
+            duration: 4000,
+          });
+        });
+      }, 600);
+    };
+    window.addEventListener("onboarding-complete", handler);
+    return () => window.removeEventListener("onboarding-complete", handler);
+  }, []);
+
   return (
     <div className={cn("relative min-h-dvh safe-area-top safe-area-bottom", locale === "km" && "locale-km")}>
       <OnboardingModal />
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       <Toaster
-        position="top-center"
+        position="bottom-center"
         toastOptions={{
           style: {
             background: locale === "km" ? "rgba(18, 12, 4, 0.92)" : "rgba(12, 20, 18, 0.9)",
@@ -36,7 +54,7 @@ export default function Home() {
             color: "#f5f5f7",
             borderRadius: "16px",
             fontSize: "13px",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.3)",
+            boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.05), 0 -4px 24px rgba(0,0,0,0.25)",
           },
         }}
       />

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/locale-context";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export const metadata: Metadata = {
   title: "Prompt Engine",
@@ -39,7 +40,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-dvh">
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider><ErrorBoundary>{children}</ErrorBoundary></LocaleProvider>
       </body>
     </html>
   );

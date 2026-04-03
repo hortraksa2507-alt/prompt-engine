@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { glassChip, glassSubtle, glassInput } from "@/lib/glass";
 import { LayoutGrid, Plus, X, Star } from "lucide-react";
+import { hapticMedium } from "@/lib/haptics";
 
 interface TemplateSelectorProps {
   templates: Template[];
@@ -62,7 +63,9 @@ export function TemplateSelector({ templates, onLoad, onSave, onDelete, canSave 
                 style={glassSubtle}
               >
                 <button
-                  onClick={() => {
+                  aria-label="Load template"
+                  onClick={async () => {
+                    await hapticMedium();
                     onLoad(tmpl);
                     setOpen(false);
                     toast.success(`${tmpl.name}`);
@@ -76,6 +79,7 @@ export function TemplateSelector({ templates, onLoad, onSave, onDelete, canSave 
                 </button>
                 {!tmpl.isPreset && (
                   <button
+                    aria-label="Delete template"
                     onClick={() => onDelete(tmpl.id)}
                     className="opacity-0 group-hover:opacity-100 text-white/25 hover:text-red-400 p-1 rounded-lg transition-all"
                   >

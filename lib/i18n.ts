@@ -97,6 +97,7 @@ export const translations = {
     "Actionable output": "Actionable output",
     "Include code snippets": "Include code snippets",
     "Compare approaches": "Compare approaches",
+    "Include example format": "Include example format",
   },
   km: {
     appName: "ម៉ាស៊ីនប្រយោគ",
@@ -194,6 +195,7 @@ export const translations = {
     "Actionable output": "លទ្ធផលអាចអនុវត្តបាន",
     "Include code snippets": "រួមបញ្ចូលកូដ",
     "Compare approaches": "ប្រៀបធៀបវិធីសាស្រ្ត",
+    "Include example format": "រួមបញ្ចូលទម្រង់ឧទាហរណ៍",
   },
 } as const;
 

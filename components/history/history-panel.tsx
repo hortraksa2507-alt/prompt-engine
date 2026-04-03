@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { glassInput, glassSubtle, glassChip } from "@/lib/glass";
 import { Search, Download, Trash2, Clock, Star } from "lucide-react";
+import { hapticLight } from "@/lib/haptics";
 
 type FilterTab = "all" | "starred";
 
@@ -146,7 +147,7 @@ export function HistoryPanel({ history, onLoad, onDelete, onClearAll, onToggleSt
                   aria-label={item.starred
                     ? (locale === "km" ? "លប់ចេញពីផ្កាយ" : "Unstar prompt")
                     : (locale === "km" ? "ដាក់ផ្កាយ" : "Star prompt")}
-                  onClick={() => onToggleStar(item.id)}
+                  onClick={async () => { await hapticLight(); onToggleStar(item.id); }}
                   className={cn(
                     "absolute top-2 right-10 p-1.5 rounded-lg transition-all",
                     item.starred

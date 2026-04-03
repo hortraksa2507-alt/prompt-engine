@@ -251,6 +251,8 @@ export function OnboardingModal() {
 
   const markDone = () => {
     setSetting("onboarding_done", true);
+    // Dispatch event to guide user to first action
+    window.dispatchEvent(new CustomEvent("onboarding-complete"));
     setVisible(false);
   };
 

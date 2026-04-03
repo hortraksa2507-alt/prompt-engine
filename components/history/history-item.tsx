@@ -56,6 +56,7 @@ export function HistoryItemCard({ item, onLoad, onDelete }: HistoryItemProps) {
           </p>
         </button>
         <button
+          aria-label="Delete prompt"
           onClick={() => onDelete(item.id)}
           className="opacity-0 group-hover:opacity-100 text-white/20 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/[0.05] shrink-0 transition-all"
         >

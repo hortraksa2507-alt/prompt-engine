@@ -38,6 +38,7 @@ const extras: ExtraInstruction[] = [
   "Actionable output",
   "Include code snippets",
   "Compare approaches",
+  "Include example format",
 ];
 
 interface BuilderFormProps {
@@ -126,9 +127,11 @@ export function BuilderForm({ builder }: BuilderFormProps) {
         </label>
         <input
           type="text"
+          inputMode="text"
           placeholder={t("rolePlaceholder")}
           value={state.role}
           onChange={(e) => setRole(e.target.value)}
+          onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
           className="w-full rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 outline-none focus:ring-2 focus:ring-white/10"
           style={glassInput}
         />
@@ -141,6 +144,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
           placeholder={t("taskPlaceholder")}
           value={state.taskDescription}
           onChange={(e) => setTaskDescription(e.target.value)}
+          onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
           className="w-full min-h-[100px] rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 resize-none outline-none focus:ring-2 focus:ring-white/10"
           style={glassInput}
         />
@@ -155,6 +159,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
           placeholder={t("contextPlaceholder")}
           value={state.context}
           onChange={(e) => setContext(e.target.value)}
+          onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
           className="w-full min-h-[80px] rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 resize-none outline-none focus:ring-2 focus:ring-white/10"
           style={glassInput}
         />
@@ -205,9 +210,11 @@ export function BuilderForm({ builder }: BuilderFormProps) {
                 </label>
                 <input
                   type="text"
+                  inputMode="text"
                   placeholder={t("avoidPlaceholder")}
                   value={state.avoid}
                   onChange={(e) => setAvoid(e.target.value)}
+                  onFocus={(e) => e.currentTarget.scrollIntoView({ behavior: "smooth", block: "center" })}
                   className="w-full rounded-2xl text-[15px] text-white placeholder:text-white/20 px-4 py-3 outline-none focus:ring-2 focus:ring-white/10"
                   style={glassInput}
                 />
@@ -251,7 +258,7 @@ export function BuilderForm({ builder }: BuilderFormProps) {
               ) : (
                 <Sparkles className="w-4 h-4" strokeWidth={2} />
               )}
-              {t("generatePrompt")}
+              {isGenerating ? (locale === "km" ? "កំពុងបង្កើត..." : "Generating...") : t("generatePrompt")}
             </button>
             <button
               onClick={reset}
@@ -262,6 +269,9 @@ export function BuilderForm({ builder }: BuilderFormProps) {
               <RotateCcw className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
+          <p className="text-center text-[10px] text-white/15 mt-1.5">
+            {locale === "km" ? "⌘ + Enter ដើម្បីបង្កើត" : "⌘ Enter to generate · ⌘ ⇧ C to copy"}
+          </p>
         </div>
       </div>
     </div>
